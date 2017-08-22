@@ -55,6 +55,42 @@ namespace EnvioDocumentos
             this.idcp = Util.GetInt(reader, "idcpe");
             this.rucempresa = Util.GetString(reader, "rucempresa");
             this.totalventa = Util.GetString(reader, "totalventa");
+            this.estadoregistro = Util.GetString(reader, "estadoregistro");
+            this.tipodocafecta = Util.GetString(reader, "tipodocafecta");
+            this.tiponotacredeb = Util.GetString(reader, "tiponotacredeb");
+            this.correocliente = Util.GetString(reader, "correocliente");
+            this.correoempresa = Util.GetString(reader, "correoempresa");
+            this.departamentoempresa = Util.GetString(reader, "departamentoempresa");
+            this.direccionempresa = Util.GetString(reader, "direccionempresa");
+            this.distritoempresa = Util.GetString(reader, "distritoempresa");
+            this.nombrecomercialempresa = Util.GetString(reader, "nombrecomercialempresa");
+            this.numerodocumentocliente = Util.GetString(reader, "numerodocumentocliente");
+            this.paiscliente = Util.GetString(reader, "paiscliente");
+            this.provinciaempresa = Util.GetString(reader, "provinciaempresa");
+            this.razonsocialcliente = Util.GetString(reader, "razonsocialcliente");
+            this.razonsocialempresa = Util.GetString(reader, "razonsocialempresa");
+            this.serienumeroafectado = Util.GetString(reader, "serienumeroafectado");
+            this.subtotal = Util.GetString(reader, "subtotal");
+            this.tipodocumentocliente = Util.GetString(reader, "tipodocumentocliente");
+            this.tipomoneda = Util.GetString(reader, "tipomoneda");
+            this.totaldescuentos = Util.GetString(reader, "totaldescuentos");
+            this.totaligv = Util.GetString(reader, "totaligv");
+            this.totalisc = Util.GetString(reader, "totalisc");
+            this.totalexoneradas = Util.GetString(reader, "totalexoneradas");
+            this.totalgratuitas = Util.GetString(reader, "totalgratuitas");
+            this.totalgravadas = Util.GetString(reader, "totalgravadas");
+            this.totalnogravada = Util.GetString(reader, "totalnogravada");
+            this.ubigeoempresa = Util.GetString(reader, "ubigeoempresa");
+            this.ensunat = Util.GetInt(reader, "ensunat");
+            this.direccioncliente = Util.GetString(reader, "direccioncliente");
+            this.mensajeerror = Util.GetString(reader, "mensajeerror");
+            this.condicion = Util.GetString(reader, "condicion");
+            this.guiaremision = Util.GetString(reader, "guiaremision");
+            this.enCustodia = Util.GetInt(reader, "enCustodia");
+            this.hash = Util.GetString(reader, "hash");
+            this.montoPercepcion = Util.GetString(reader, "montoPercepcion");
+            this.totalDocPercepcion = Util.GetString(reader, "totalDocPercepcion");
+            this.telefono1Empresa = Util.GetString(reader, "telefono1Empresa");
         }
 
 
