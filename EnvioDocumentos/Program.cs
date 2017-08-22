@@ -24,7 +24,7 @@ namespace EnvioDocumentos
             connection = GetConnection(user, password, db, server);
             string query = "select * from cpe_doc_cab where tipodocumento='01' and serienumero='F001-00001264' and fechaemision='2017-08-21'";
 
-            var resultselect = string.Format( query);
+            var resultselect = string.Format(query);
 
             Console.WriteLine(resultselect);
             //Console.ReadLine();

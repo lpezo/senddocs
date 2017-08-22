@@ -49,7 +49,9 @@ namespace EnvioDocumentos
         public int enCustodia { get; set; }
         public string telefono1Empresa { get; set; }
         public int ensunat { get; set; }
-
+        public string fechaemision { get; set; }
+        public string tipodocumento { get; set; }
+        public string serienumero { get; set; }
         public Documento(SqlDataReader reader)
         {
             this.idcp = Util.GetInt(reader, "idcpe");
@@ -91,14 +93,14 @@ namespace EnvioDocumentos
             this.montoPercepcion = Util.GetString(reader, "montoPercepcion");
             this.totalDocPercepcion = Util.GetString(reader, "totalDocPercepcion");
             this.telefono1Empresa = Util.GetString(reader, "telefono1Empresa");
+            this.fechaemision = Util.GetString(reader, "fechaemision");
+            this.tipodocumento = Util.GetString(reader, "tipodocumento");
+            this.serienumero = Util.GetString(reader, "serienumero");
         }
-
-
-
 
         public override string ToString()
         {
-            return string.Format("idcp = {0} rucempresa = {1} totalventa={2} ", idcp, rucempresa, totalventa);
+            return string.Format("tipodocumento =  {0}  rucempresa = {1} totalventa = {2} serienumero = {3} fechaemision = {4}" , tipodocumento, rucempresa,totalventa, serienumero,fechaemision);
         }
 
 

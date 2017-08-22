@@ -1,0 +1,7 @@
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\EnvioDocumentos.exe.config
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\config.xml
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\EnvioDocumentos.exe
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\EnvioDocumentos.pdb
+E:\ProgramaC#\senddocs\EnvioDocumentos\obj\Debug\EnvioDocumentos.csprojResolveAssemblyReference.cache
+E:\ProgramaC#\senddocs\EnvioDocumentos\obj\Debug\EnvioDocumentos.exe
+E:\ProgramaC#\senddocs\EnvioDocumentos\obj\Debug\EnvioDocumentos.pdb
