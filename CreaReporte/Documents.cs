@@ -83,8 +83,89 @@ namespace CreaReporte
             //Agregar Tabla
             paragraph.AddText("\n");
 
+            header.AddParagraph("");
+
+
+            Table table = new Table();
+            table.Borders.Width = 0.75;
+
+            Column column = table.AddColumn(Unit.FromCentimeter(4));
+            column = table.AddColumn(Unit.FromCentimeter(4));
+            column = table.AddColumn(Unit.FromCentimeter(4));
+            column = table.AddColumn(Unit.FromCentimeter(4));
+
+
+            column.Format.Alignment = ParagraphAlignment.Center;
+
+            table.AddColumn(Unit.FromCentimeter(4));
+
+            Row row = table.AddRow();
+            
+            row.Shading.Color = Colors.LightGray;
+            row.Format.Alignment = ParagraphAlignment.Center;
+            Cell cell = row.Cells[0];
+            cell.AddParagraph("NO INTERNO");
+            cell = row.Cells[1];
+            cell.AddParagraph("FECHA EMISION");
+            cell = row.Cells[2];
+            cell.AddParagraph("FECHA VENCIMIENTO");
+            cell = row.Cells[3];
+            cell.AddParagraph("CONDICIONES");
+            cell = row.Cells[4];
+            cell.AddParagraph("GUIA REMISION");
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Center;
+            cell = row.Cells[0];
+            cell.AddParagraph("5436");
+            cell = row.Cells[1];
+            cell.AddParagraph("2017-08-24");
+            cell = row.Cells[2];
+            cell.AddParagraph("2017-10-24");
+            cell = row.Cells[3];
+            cell.AddParagraph("Contado");
+            cell = row.Cells[4];
+            cell.AddParagraph("5656");
+
+            //table.SetEdge(0, 0, 2, 3, Edge.Box, BorderStyle.Single, 1.5, Colors.Black);
+
+            header.Add(table);
+
 
         }
+         static void section(Document document)
+        {
+            Section section = document.AddSection();
+            section.PageSetup.OddAndEvenPagesHeaderFooter = true;
+            section.PageSetup.StartingNumber = 1;
+
+
+            Table table = new Table();
+            table.Borders.Width = 0.2;
+
+            Column column = table.AddColumn(Unit.FromCentimeter(2));
+            column = table.AddColumn(Unit.FromCentimeter(4));
+            column = table.AddColumn(Unit.FromCentimeter(4));
+            column = table.AddColumn(Unit.FromCentimeter(4));
+
+
+            column.Format.Alignment = ParagraphAlignment.Center;
+
+            table.AddColumn(Unit.FromCentimeter(4));
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.AddTab();
+            paragraph.AddPageField();
+
+            section.Footers.Primary.Add(table);
+
+
+        }
+
+
+
+
+
 
         /// <summary>
         /// Defines the styles used in the document.
