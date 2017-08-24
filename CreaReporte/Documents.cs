@@ -57,20 +57,22 @@ namespace CreaReporte
             texto = textFrame.AddParagraph("\nF001-00000001");
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
-            section.Add(textFrame);
+            header.Add(textFrame);
 
 
-            document.LastSection.AddParagraph("Razón Social Empresa", "Heading2");
+            var paragraph = header.AddParagraph("Razón Social Empresa");
+            paragraph.Style = "Heading2";
 
-            Paragraph paragraph = document.LastSection.AddParagraph();
+            //document.LastSection.AddParagraph("Razón Social Empresa", "Heading2");
+            //Paragraph paragraph = document.LastSection.AddParagraph();
 
-            paragraph.Format.Alignment = ParagraphAlignment.Left;
+            paragraph = header.AddParagraph();
             paragraph.AddText("AV. CAMINO REAL301 #602\n");
             paragraph.AddText("SURCO, LIMA, LIMA\n");
             paragraph.AddText("TELÉFONO: 12345678");
 
-
-            paragraph = document.LastSection.AddParagraph("\n\n\n", "TOC");
+            paragraph = header.AddParagraph("\n\n\n");
+            paragraph.Style = "TOC";
             paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
             paragraph.AddText ("CARHUAS MIRANDA GLORIA");
             paragraph.AddFormattedText("\nDNI No\t", TextFormat.Bold);
@@ -78,6 +80,8 @@ namespace CreaReporte
             paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
             paragraph.AddText("AV.LAS LOMAS MZ.A LT.3 - Ñ Á ASOC.ALAMEDA DEL AGUSTINO");
 
+            //Agregar Tabla
+            paragraph.AddText("\n");
 
 
         }
