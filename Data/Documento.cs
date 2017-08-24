@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EnvioDocumentos
+namespace Data
 {
-    class Documento
+    public class Documento
     {
         public int idcp { get; set; }
         public string rucempresa { get; set; }
@@ -52,6 +52,12 @@ namespace EnvioDocumentos
         public string fechaemision { get; set; }
         public string tipodocumento { get; set; }
         public string serienumero { get; set; }
+
+        public Documento()
+        {
+
+        }
+
         public Documento(SqlDataReader reader)
         {
             this.idcp = Util.GetInt(reader, "idcpe");
@@ -83,12 +89,12 @@ namespace EnvioDocumentos
             this.totalgravadas = Util.GetString(reader, "totalgravadas");
             this.totalnogravada = Util.GetString(reader, "totalnogravada");
             this.ubigeoempresa = Util.GetString(reader, "ubigeoempresa");
-            this.ensunat = Util.GetInt(reader, "ensunat");
+            this.ensunat = Util.GetByte(reader, "ensunat");
             this.direccioncliente = Util.GetString(reader, "direccioncliente");
             this.mensajeerror = Util.GetString(reader, "mensajeerror");
             this.condicion = Util.GetString(reader, "condicion");
             this.guiaremision = Util.GetString(reader, "guiaremision");
-            this.enCustodia = Util.GetInt(reader, "enCustodia");
+            this.enCustodia = Util.GetByte(reader, "enCustodia");
             this.hash = Util.GetString(reader, "hash");
             this.montoPercepcion = Util.GetString(reader, "montoPercepcion");
             this.totalDocPercepcion = Util.GetString(reader, "totalDocPercepcion");

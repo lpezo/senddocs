@@ -1,4 +1,5 @@
-﻿using MigraDoc.DocumentObjectModel;
+﻿using Data;
+using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
 using System;
@@ -11,7 +12,7 @@ namespace CreaReporte
 {
     class Documents
     {
-        public static Document CreateDocument()
+        public static Document CreateDocument(Documento doc)
         {
             // Create a new MigraDoc document
             Document document = new Document();
@@ -19,12 +20,24 @@ namespace CreaReporte
             document.Info.Subject = "Documento Electrónico en Migradoc";
             document.Info.Author = "Luis Pezo";
             DefineStyles(document);
-            Cabecera(document);
+            Cabecera(document, doc);
+            Cuerpo(document, doc);
 
             return document;
         }
 
-        static void Cabecera(Document document)
+        private static void Cuerpo(Document document, Documento doc)
+        {
+            Section section = document.LastSection;
+
+            //Cuerpo
+            var p = section.AddParagraph("Cant\tCódigo\tDescripción\n", "Item");
+            p.AddText("1\t2\txxx\n");
+            //p.AddText(string.format("{0}\t{1}\n", valor1, valor));
+
+        }
+
+        static void Cabecera(Document document, Documento doc)
         {
             Section section = document.AddSection();
             section.PageSetup.PageFormat = PageFormat.A4;
@@ -48,13 +61,14 @@ namespace CreaReporte
             textFrame.LineFormat.Width = new Unit(1);
             textFrame.LineFormat.Color = MigraDoc.DocumentObjectModel.Colors.Black;
             //textFrame.FillFormat.Color = MigraDoc.DocumentObjectModel.Colors.Green;
-            var texto = textFrame.AddParagraph("RUC: 12345678901");
+
+            var texto = textFrame.AddParagraph("RUC: " + doc.rucempresa);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             texto = textFrame.AddParagraph("FACTURA ELECTRÓNICA");
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
-            texto = textFrame.AddParagraph("\nF001-00000001");
+            texto = textFrame.AddParagraph("\n" + doc.serienumero);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             header.Add(textFrame);
@@ -62,7 +76,6 @@ namespace CreaReporte
 
             var paragraph = header.AddParagraph("Razón Social Empresa");
             paragraph.Style = "Heading2";
-
             //document.LastSection.AddParagraph("Razón Social Empresa", "Heading2");
             //Paragraph paragraph = document.LastSection.AddParagraph();
 
@@ -75,7 +88,7 @@ namespace CreaReporte
             paragraph.Style = "TOC";
             paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
             paragraph.AddText ("CARHUAS MIRANDA GLORIA");
-            paragraph.AddFormattedText("\nDNI No\t", TextFormat.Bold);
+            paragraph.AddFormattedText("\nRUC No\t", TextFormat.Bold);
             paragraph.AddText("09509195");
             paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
             paragraph.AddText("AV.LAS LOMAS MZ.A LT.3 - Ñ Á ASOC.ALAMEDA DEL AGUSTINO");
@@ -130,7 +143,6 @@ namespace CreaReporte
             //table.SetEdge(0, 0, 2, 3, Edge.Box, BorderStyle.Single, 1.5, Colors.Black);
 
             header.Add(table);
-
 
         }
          static void section(Document document)
@@ -221,6 +233,13 @@ namespace CreaReporte
             style = document.Styles.AddStyle("TOC", "Normal");
             style.ParagraphFormat.AddTabStop("2.5cm", TabAlignment.Left, TabLeader.Spaces);
             //style.ParagraphFormat.Font.Color = Colors.Blue;
+
+            style = document.Styles.AddStyle("Item", "Normal");
+            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Right, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("3cm", TabAlignment.Left, TabLeader.Spaces);
+
+
         }
 
 

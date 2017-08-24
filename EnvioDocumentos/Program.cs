@@ -5,14 +5,11 @@ using System.Text;
 using System.IO;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-
+using Data;
+using CreaReporte;
 
 namespace EnvioDocumentos
 {
-
-
-   
-
     class Program
     {
          static void Main(string[] args)
@@ -31,22 +28,36 @@ namespace EnvioDocumentos
             var command = new SqlCommand(resultselect, connection);
 
             var reader = command.ExecuteReader();
+#if !DEBUG
             try
             {
+#endif
                 var list = new List<Documento>();
                 while (reader.Read())
                 {
                     var document = new Documento(reader);
                     list.Add(document);
-                    Console.WriteLine(document);
+                    //Console.WriteLine(document);
                 }
+#if !DEBUG
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
             finally{
+#endif
                 reader.Close();
+#if !DEBUG
+            }
+#endif
+
+            var progPdf = new DocPdf();
+
+            foreach (var doc in list)
+            {
+                Console.WriteLine(doc);
+                progPdf.Visualiza(doc);
             }
 
             Console.WriteLine("Presione ENTER para continuar...");

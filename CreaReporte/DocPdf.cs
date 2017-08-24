@@ -6,17 +6,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CreaReporte
 {
-    class Program
+    public class DocPdf
     {
-        static void Main(string[] args)
+        public void Visualiza(Documento doc)
         {
             // Create a MigraDoc document
-            var docBlanco = new Documento();
-            Document document = Documents.CreateDocument(docBlanco);
+            Document document = Documents.CreateDocument(doc);
             //string ddl = MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToString(document);
             //MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToFile(document, "MigraDoc.mdddl");
             PdfDocumentRenderer renderer = new PdfDocumentRenderer(true, PdfSharp.Pdf.PdfFontEmbedding.Always);

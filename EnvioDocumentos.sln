@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvioDocumentos", "EnvioDoc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreaReporte", "CreaReporte\CreaReporte.csproj", "{9E73DCE8-4227-4BE3-9C90-CA9009D2F191}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{7CDE1C36-072D-42A3-A655-192FF0A84082}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9E73DCE8-4227-4BE3-9C90-CA9009D2F191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E73DCE8-4227-4BE3-9C90-CA9009D2F191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E73DCE8-4227-4BE3-9C90-CA9009D2F191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CDE1C36-072D-42A3-A655-192FF0A84082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CDE1C36-072D-42A3-A655-192FF0A84082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CDE1C36-072D-42A3-A655-192FF0A84082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CDE1C36-072D-42A3-A655-192FF0A84082}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
