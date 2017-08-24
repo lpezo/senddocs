@@ -26,16 +26,7 @@ namespace CreaReporte
             return document;
         }
 
-        private static void Cuerpo(Document document, Documento doc)
-        {
-            Section section = document.LastSection;
-
-            //Cuerpo
-            var p = section.AddParagraph("Cant\tCódigo\tDescripción\n", "Item");
-            p.AddText("1\t2\txxx\n");
-            //p.AddText(string.format("{0}\t{1}\n", valor1, valor));
-
-        }
+      
 
         static void Cabecera(Document document, Documento doc)
         {
@@ -52,23 +43,24 @@ namespace CreaReporte
             //header.AddParagraph("\tOdd Page Header");
 
             TextFrame textFrame = new TextFrame();
+            //textFrame.MarginTop = new Unit(100, UnitType.Millimeter);
             textFrame.Width = new Unit(200);
             textFrame.Height = new Unit(100);
             textFrame.RelativeHorizontal = RelativeHorizontal.Margin;
             textFrame.RelativeVertical = RelativeVertical.Margin;
             textFrame.WrapFormat.DistanceLeft = new Unit(320);
-            textFrame.WrapFormat.DistanceTop = new Unit(0);
+            textFrame.WrapFormat.DistanceTop = new Unit(-200);
             textFrame.LineFormat.Width = new Unit(1);
             textFrame.LineFormat.Color = MigraDoc.DocumentObjectModel.Colors.Black;
             //textFrame.FillFormat.Color = MigraDoc.DocumentObjectModel.Colors.Green;
 
-            var texto = textFrame.AddParagraph("RUC: " + doc.rucempresa);
+            var texto = textFrame.AddParagraph("RUC:"+doc.rucempresa);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             texto = textFrame.AddParagraph("FACTURA ELECTRÓNICA");
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
-            texto = textFrame.AddParagraph("\n" + doc.serienumero);
+            texto = textFrame.AddParagraph("\n"+doc.serienumero);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             header.Add(textFrame);
@@ -144,8 +136,28 @@ namespace CreaReporte
 
             header.Add(table);
 
+         
+
         }
-         static void section(Document document)
+
+        private static void Cuerpo(Document document, Documento doc)
+        {
+
+            Section section = document.LastSection;
+            section.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
+
+
+            var p = section.AddParagraph("CANTIDAD\tCODIGO\tDESCRIPCION\tTOTAL\tTOTAL IGV\n","Item");
+            p.AddText( doc.idcp + "\t" +doc.idcp + "\t"+doc.totalventa+"\t"+doc.totaligv+"\t"+doc.totaligv+"\n");
+
+            //Cuerpo
+            //Section section = document.LastSection;
+            //var p = section.AddParagraph("CANTIDAD\tCODIGO\tDESCRIPCION\tTOTAL\tTOTAL IGV\n", "Item");
+            //p.AddText("1\t2\txxx\n");
+            ////p.AddText(string.format("{0}\t{1}\n", valor1, valor));
+
+        }
+        static void section(Document document)
         {
             Section section = document.AddSection();
             section.PageSetup.OddAndEvenPagesHeaderFooter = true;
@@ -235,10 +247,11 @@ namespace CreaReporte
             //style.ParagraphFormat.Font.Color = Colors.Blue;
 
             style = document.Styles.AddStyle("Item", "Normal");
-            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Right, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("3cm", TabAlignment.Left, TabLeader.Spaces);
-
+            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Right, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
 
         }
 
