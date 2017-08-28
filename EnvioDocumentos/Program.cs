@@ -61,8 +61,8 @@ namespace EnvioDocumentos
                 progPdf.Visualiza(doc, listadetalle);
             }
 
-            Console.WriteLine("Presione ENTER para continuar...");
-            Console.ReadLine();
+            //Console.WriteLine("Presione ENTER para continuar...");
+            //Console.ReadLine();
 
 
         }

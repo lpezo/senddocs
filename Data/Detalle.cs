@@ -15,9 +15,11 @@ using System.Text;
         public string importetotal { get; set; }
         public string importeigv { get; set; }
         public string subtotal { get; set; }
+        public string preciounitario { get; set; }
 
         public Detalle(SqlDataReader reader)
         {
+            this.preciounitario = Util.GetString(reader, "importeunitario");
             this.subtotal = Util.GetString(reader, "subtotal");
             this.cantidad = Util.GetString(reader, "cantidad");
             this.descripcion = Util.GetString(reader, "descripcion");

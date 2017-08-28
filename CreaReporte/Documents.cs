@@ -100,6 +100,7 @@ namespace CreaReporte
             Table table = new Table();
             table.Borders.Width = 0.75;
 
+            
             Column column = table.AddColumn(Unit.FromCentimeter(4));
             column = table.AddColumn(Unit.FromCentimeter(4));
             column = table.AddColumn(Unit.FromCentimeter(4));
@@ -151,36 +152,139 @@ namespace CreaReporte
 
             Section section = document.LastSection;
             section.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
-            
 
-            var p = section.AddParagraph("CANTIDAD\tCODIGO\tDESCRIPCION\tTOTAL\tTOTAL IGV\n\n", "Item");
+
+             section.AddParagraph("Cant.\tCodigo\tDescripcion\tPre.unit.\tSub total\tI.G.V\tTotal\n\n", "Item");
             // foreach ( string r in  ) {
             //p.AddText(doc.cantidad + "\t" + doc.importeigv + "\t" + doc.cantidad + "\t" + doc.importeigv + "\t" + doc.importetotal + "\n");
             double t = 0;
+            double igv = 0;
+            double sub = 0;
+            
+            
             foreach (var det in listadetalle)
             {
-                section.AddParagraph (string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n", det.cantidad, det.codigoitem, det.descripcion, det
-                    .importetotal, det.importeigv), "Item");
+                string cant = det.cantidad.Substring(0, 1);
 
+                section.AddParagraph(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n", cant, det.codigoitem, det.descripcion, 
+                    det.preciounitario,det.subtotal ,det.importeigv, det.importetotal), "Item");
                 float importet = Util.ToNumber(det.importetotal);
                 float importeigvt = Util.ToNumber(det.importeigv);
                 float subtotalt = Util.ToNumber(det.subtotal);
                 t = t + importet;
-               
+                igv = igv + importeigvt;
+                sub = sub + subtotalt;
 
-                //p.AddText(string.Format("parsedResult"));
+
             }
-            Console.WriteLine(t);
-            //p.AddText(string.Format("{0}\t\t" + "{1}\t\t" + "{2}\n", totaligv, total, sbt));
 
-            // }
-            //Cuerpo
-            //Section section = document.LastSection;
-            //var p = section.AddParagraph("CANTIDAD\tCODIGO\tDESCRIPCION\tTOTAL\tTOTAL IGV\n", "Item");
-            //p.AddText("1\t2\txxx\n");
-            ////p.AddText(string.format("{0}\t{1}\n", valor1, valor));
+            section.AddParagraph("");
+            section.AddParagraph("");
+
+            string subs = Convert.ToString(sub);
+            string ts = Convert.ToString(t);
+            string igvs = Convert.ToString(igv);
+            string subs2 = subs.Substring(0, 5);
+            string ts2 = ts.Substring(0, 5);
+            string igvs2 = igvs.Substring(0, 5);
+
+
+            //HeaderFooter body = section.Footers.Primary;
+            
+
+            Table table = new Table();
+            table.Borders.Width = 0;
+            table.Rows.LeftIndent = new Unit(330);
+            
+
+
+            Column column = table.AddColumn(Unit.FromCentimeter(3.5) );
+            
+            column = table.AddColumn(Unit.FromCentimeter(2));
+            
+
+
+
+            column.Format.Alignment = ParagraphAlignment.Right;
+
+
+            
+            Row row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+           Cell cell = row.Cells[0];
+            cell.AddParagraph("SUB TOTAL S/.");
+            cell = row.Cells[1];
+            cell.AddParagraph(subs2);
+
+
+       
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("DSCTO GLOBAL S/.");
+            cell = row.Cells[1];
+            cell.AddParagraph("");
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("OP. GRAVADA S/.");
+            cell = row.Cells[1];
+            cell.AddParagraph("");
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("OP.EXONERADA S/.");
+            cell = row.Cells[1];
+            cell.AddParagraph("");
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("OP.INAFECTA S/.");
+            cell = row.Cells[1];
+            cell.AddParagraph("");
+
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("OP.GRATUITA S/.");
+            cell = row.Cells[1];
+
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("IGV 18% S/.");
+            cell = row.Cells[1];
+            cell.AddParagraph(igvs2);
+            section.AddParagraph("");
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("");
+            cell = row.Cells[1];
+            cell.AddParagraph("");
+           
+       
+
+            row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Right;
+            cell = row.Cells[0];
+            cell.AddParagraph("TOTAL S/.");
+            cell = row.Cells[1];
+            cell.AddParagraph(ts2);
+
+            section.Add(table);
 
         }
+
+        
+
         static void section(Document document)
         {
             Section section = document.AddSection();
@@ -271,11 +375,19 @@ namespace CreaReporte
             //style.ParagraphFormat.Font.Color = Colors.Blue;
 
             style = document.Styles.AddStyle("Item", "Normal");
-            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("8cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("1cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("3cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("11cm", TabAlignment.Right, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("13cm", TabAlignment.Right, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("15cm", TabAlignment.Right, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("17cm", TabAlignment.Right, TabLeader.Spaces);
+
+
+
+
+            //style = document.Styles.AddStyle("Total", "Normal");
+
+
 
         }
 
