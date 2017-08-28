@@ -18,9 +18,8 @@ namespace EnvioDocumentos
             string   user = "", password = "", db = "", server = "";
             getvariablesconexion ( ref user,  ref password,  ref db,  ref server);
             SqlConnection connection = null;
-            connection = GetConnection(user, password, db, server);
+           connection = GetConnection(user, password, db, server);
             string query = "select * from cpe_doc_cab where tipodocumento='01' and serienumero='F001-00001264' and fechaemision='2017-08-21'";
-            //string query = "select * from cpe_doc_det where tipodocumento='01' and serienumero='F001-00000438' and codigoitem='00000026'";
 
             var resultselect = string.Format(query);
 
@@ -29,17 +28,19 @@ namespace EnvioDocumentos
             var command = new SqlCommand(resultselect, connection);
 
             var reader = command.ExecuteReader();
+
+             var list = new List<Documento>();
+            
 #if !DEBUG
             try
             {
 #endif
-                var list = new List<Documento>();
-                while (reader.Read())
+            while (reader.Read())
                 {
-                    var document = new Documento(reader);
+                     var document = new Documento(reader);
                     list.Add(document);
-                    //Console.WriteLine(document);
-                }
+                    Console.WriteLine(document);
+            }
 #if !DEBUG
             }
             catch (Exception ex)
@@ -48,23 +49,56 @@ namespace EnvioDocumentos
             }
             finally{
 #endif
-                reader.Close();
+            reader.Close();
 #if !DEBUG
             }
 #endif
 
             var progPdf = new DocPdf();
-
             foreach (var doc in list)
             {
-                Console.WriteLine(doc);
-                progPdf.Visualiza(doc);
+                var listadetalle = GetDetalle(doc.idcp, connection);
+                progPdf.Visualiza(doc, listadetalle);
             }
 
             Console.WriteLine("Presione ENTER para continuar...");
             Console.ReadLine();
 
 
+        }
+
+        private static List<Detalle> GetDetalle(int idcpe, SqlConnection connection )
+        {
+            var lista = new List<Detalle>();
+
+            string query = "select * from cpe_doc_det where idcpe= {0}";
+            var resul = string.Format(query, idcpe);
+            var command = new SqlCommand(resul, connection);
+            var reader = command.ExecuteReader();
+            try
+            {
+
+                while (reader.Read())
+                {
+                    var document = new Detalle(reader);
+                    lista.Add(document);
+                    Console.WriteLine(document);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally{
+
+                reader.Close();
+
+            }
+
+           
+
+            return lista;
         }
 
         private static SqlConnection GetConnection(string server, string db, string user, string password)

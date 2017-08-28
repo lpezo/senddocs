@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace Data
 {
-    class Util
+    public class Util
     {
         public static string GetString(SqlDataReader reader, string nombre)
         {
@@ -48,7 +48,12 @@ namespace Data
                 throw new Exception("No se encontro el campo " + nombre);
         }
 
-
+        public static float ToNumber(string numero)
+        {
+            float ret = 0;
+            float.TryParse(numero.Trim(), out ret);
+            return ret;
+        }
 
     }
 }

@@ -55,12 +55,7 @@ namespace Data
 
 
 
-        /*public string descripcion { get; set; }
-        public string codigo { get; set; }
-        public string cantidad { get; set; }
-        public string importetotal { get; set; }
-        public string importeigv { get; set; }
-        public string subtotal2 { get; set; }*/
+        
 
 
         public Documento()
@@ -70,13 +65,8 @@ namespace Data
 
         public Documento(SqlDataReader reader)
         {
-            /*this.subtotal2 = Util.GetString(reader, "subtotal");
-            this.cantidad = Util.GetString(reader, "cantidad");
-            this.descripcion = Util.GetString(reader, "descripcion");
-            this.codigo = Util.GetString(reader, "codigo");
-            this.importetotal = Util.GetString(reader, "importetotal");
-            this.importeigv = Util.GetString(reader, "importeigv");*/
-            
+        
+        
 
             this.idcp = Util.GetInt(reader, "idcpe");
             this.rucempresa = Util.GetString(reader, "rucempresa");
@@ -122,12 +112,13 @@ namespace Data
             this.serienumero = Util.GetString(reader, "serienumero");
         }
 
-        public override string ToString()
-        {
-            return string.Format("tipodocumento =  {0}  rucempresa = {1} totalventa = {2} serienumero = {3} fechaemision = {4}" , tipodocumento, rucempresa,totalventa, serienumero,fechaemision);
-       
+             public override string ToString()
+             {
+                 return string.Format("idcp =  {0}  subtotal = {1} serienumero = {2} " , idcp, subtotal,serienumero);
+
+             }
+     
+
+        }
     }
 
-
-    }
-}

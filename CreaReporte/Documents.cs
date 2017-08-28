@@ -1,4 +1,5 @@
 ﻿using Data;
+
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
@@ -8,11 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace CreaReporte
 {
+
+
     class Documents
     {
-        public static Document CreateDocument(Documento doc)
+      
+
+        public static Document CreateDocument(Documento doc, List<Detalle> listadetalle)
         {
             // Create a new MigraDoc document
             Document document = new Document();
@@ -20,15 +26,15 @@ namespace CreaReporte
             document.Info.Subject = "Documento Electrónico en Migradoc";
             document.Info.Author = "Luis Pezo";
             DefineStyles(document);
-            Cabecera(document, doc);
-            Cuerpo(document, doc);
+            Cabecera(document, doc,listadetalle);
+            Cuerpo(document, doc, listadetalle);
 
             return document;
         }
 
       
 
-        static void Cabecera(Document document, Documento doc)
+        static void Cabecera(Document document, Documento doc, List<Detalle> listadetalle)
         {
             Section section = document.AddSection();
             section.PageSetup.PageFormat = PageFormat.A4;
@@ -60,7 +66,7 @@ namespace CreaReporte
             texto = textFrame.AddParagraph("FACTURA ELECTRÓNICA");
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
-            texto = textFrame.AddParagraph("\n"+doc.serienumero);
+            texto = textFrame.AddParagraph("\n"+ doc.serienumero);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             header.Add(textFrame);
@@ -122,15 +128,15 @@ namespace CreaReporte
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Center;
             cell = row.Cells[0];
-            cell.AddParagraph("5436");
+            cell.AddParagraph();
             cell = row.Cells[1];
-            cell.AddParagraph("2017-08-24");
+            cell.AddParagraph(doc.fechaemision);
             cell = row.Cells[2];
-            cell.AddParagraph("2017-10-24");
+            cell.AddParagraph();
             cell = row.Cells[3];
-            cell.AddParagraph("Contado");
+            cell.AddParagraph(doc.condicion);
             cell = row.Cells[4];
-            cell.AddParagraph("5656");
+            cell.AddParagraph();
 
             //table.SetEdge(0, 0, 2, 3, Edge.Box, BorderStyle.Single, 1.5, Colors.Black);
 
@@ -140,16 +146,34 @@ namespace CreaReporte
 
         }
 
-        private static void Cuerpo(Document document, Documento doc)
+        private static void Cuerpo(Document document, Documento doc, List<Detalle> listadetalle)
         {
 
             Section section = document.LastSection;
             section.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
+            
 
+            var p = section.AddParagraph("CANTIDAD\tCODIGO\tDESCRIPCION\tTOTAL\tTOTAL IGV\n\n", "Item");
+            // foreach ( string r in  ) {
+            //p.AddText(doc.cantidad + "\t" + doc.importeigv + "\t" + doc.cantidad + "\t" + doc.importeigv + "\t" + doc.importetotal + "\n");
+            double t = 0;
+            foreach (var det in listadetalle)
+            {
+                section.AddParagraph (string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n", det.cantidad, det.codigoitem, det.descripcion, det
+                    .importetotal, det.importeigv), "Item");
 
-            var p = section.AddParagraph("CANTIDAD\tCODIGO\tDESCRIPCION\tTOTAL\tTOTAL IGV\n","Item");
-            p.AddText( doc.idcp + "\t" +doc.idcp + "\t"+doc.totalventa+"\t"+doc.totaligv+"\t"+doc.totaligv+"\n");
+                float importet = Util.ToNumber(det.importetotal);
+                float importeigvt = Util.ToNumber(det.importeigv);
+                float subtotalt = Util.ToNumber(det.subtotal);
+                t = t + importet;
+               
 
+                //p.AddText(string.Format("parsedResult"));
+            }
+            Console.WriteLine(t);
+            //p.AddText(string.Format("{0}\t\t" + "{1}\t\t" + "{2}\n", totaligv, total, sbt));
+
+            // }
             //Cuerpo
             //Section section = document.LastSection;
             //var p = section.AddParagraph("CANTIDAD\tCODIGO\tDESCRIPCION\tTOTAL\tTOTAL IGV\n", "Item");
@@ -247,11 +271,11 @@ namespace CreaReporte
             //style.ParagraphFormat.Font.Color = Colors.Blue;
 
             style = document.Styles.AddStyle("Item", "Normal");
-            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Right, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
-            style.ParagraphFormat.AddTabStop("5cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("8cm", TabAlignment.Left, TabLeader.Spaces);
+            style.ParagraphFormat.AddTabStop("2cm", TabAlignment.Left, TabLeader.Spaces);
 
         }
 

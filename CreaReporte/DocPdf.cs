@@ -11,10 +11,10 @@ namespace CreaReporte
 {
     public class DocPdf
     {
-        public void Visualiza(Documento doc)
+        public void Visualiza(Documento doc, List<Detalle> listadetalle)
         {
             // Create a MigraDoc document
-            Document document = Documents.CreateDocument(doc);
+            Document document = Documents.CreateDocument(doc, listadetalle);
             //string ddl = MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToString(document);
             //MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToFile(document, "MigraDoc.mdddl");
             PdfDocumentRenderer renderer = new PdfDocumentRenderer(true, PdfSharp.Pdf.PdfFontEmbedding.Always);
