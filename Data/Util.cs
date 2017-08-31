@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Drawing;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Data
 {
@@ -31,6 +33,14 @@ namespace Data
             }
             else
                 throw new Exception("No se encontro el campo " + nombre);
+        }
+
+
+
+        public static byte[] ImageToByte(System.Drawing.Image img)
+        {
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(img, typeof(byte[]));
         }
 
 

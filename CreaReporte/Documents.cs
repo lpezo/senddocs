@@ -8,7 +8,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+//using BarcodeLib;
+using System.Drawing.Imaging;
+//using Gma.QrCodeNet.Encoding;
+//using Gma.QrCodeNet.Encoding.Windows.Render;
+using System.Drawing;
+using System.IO;
+using ZXing;
+using System.ComponentModel;
 
 namespace CreaReporte
 {
@@ -16,7 +23,7 @@ namespace CreaReporte
 
     class Documents
     {
-      
+        private static ITypeDescriptorContext img;
 
         public static Document CreateDocument(Documento doc, List<Detalle> listadetalle)
         {
@@ -26,13 +33,14 @@ namespace CreaReporte
             document.Info.Subject = "Documento Electrónico en Migradoc";
             document.Info.Author = "Luis Pezo";
             DefineStyles(document);
-            Cabecera(document, doc,listadetalle);
+            Cabecera(document, doc, listadetalle);
             Cuerpo(document, doc, listadetalle);
+            footer(document);
 
             return document;
         }
 
-      
+
 
         static void Cabecera(Document document, Documento doc, List<Detalle> listadetalle)
         {
@@ -60,13 +68,13 @@ namespace CreaReporte
             textFrame.LineFormat.Color = MigraDoc.DocumentObjectModel.Colors.Black;
             //textFrame.FillFormat.Color = MigraDoc.DocumentObjectModel.Colors.Green;
 
-            var texto = textFrame.AddParagraph("RUC:"+doc.rucempresa);
+            var texto = textFrame.AddParagraph("RUC:" + doc.rucempresa);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             texto = textFrame.AddParagraph("FACTURA ELECTRÓNICA");
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
-            texto = textFrame.AddParagraph("\n"+ doc.serienumero);
+            texto = textFrame.AddParagraph("\n" + doc.serienumero);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             header.Add(textFrame);
@@ -85,7 +93,7 @@ namespace CreaReporte
             paragraph = header.AddParagraph("\n\n\n");
             paragraph.Style = "TOC";
             paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
-            paragraph.AddText ("CARHUAS MIRANDA GLORIA");
+            paragraph.AddText("CARHUAS MIRANDA GLORIA");
             paragraph.AddFormattedText("\nRUC No\t", TextFormat.Bold);
             paragraph.AddText("09509195");
             paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
@@ -100,7 +108,7 @@ namespace CreaReporte
             Table table = new Table();
             table.Borders.Width = 0.75;
 
-            
+
             Column column = table.AddColumn(Unit.FromCentimeter(4));
             column = table.AddColumn(Unit.FromCentimeter(4));
             column = table.AddColumn(Unit.FromCentimeter(4));
@@ -112,7 +120,7 @@ namespace CreaReporte
             table.AddColumn(Unit.FromCentimeter(4));
 
             Row row = table.AddRow();
-            
+
             row.Shading.Color = Colors.LightGray;
             row.Format.Alignment = ParagraphAlignment.Center;
             Cell cell = row.Cells[0];
@@ -143,31 +151,42 @@ namespace CreaReporte
 
             header.Add(table);
 
-         
+
 
         }
 
         private static void Cuerpo(Document document, Documento doc, List<Detalle> listadetalle)
         {
 
+
+          
+
+
+
+
+
+
+
             Section section = document.LastSection;
             section.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
 
 
-             section.AddParagraph("Cant.\tCodigo\tDescripcion\tPre.unit.\tSub total\tI.G.V\tTotal\n\n", "Item");
-            // foreach ( string r in  ) {
-            //p.AddText(doc.cantidad + "\t" + doc.importeigv + "\t" + doc.cantidad + "\t" + doc.importeigv + "\t" + doc.importetotal + "\n");
+            section.AddParagraph("Cant.\tCodigo\tDescripcion\tPre.unit.\tSub total\tI.G.V\tTotal\n\n", "Item");
+
+          
+
+
             double t = 0;
             double igv = 0;
             double sub = 0;
-            
-            
+
+
             foreach (var det in listadetalle)
             {
                 string cant = det.cantidad.Substring(0, 1);
 
-                section.AddParagraph(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n", cant, det.codigoitem, det.descripcion, 
-                    det.preciounitario,det.subtotal ,det.importeigv, det.importetotal), "Item");
+                section.AddParagraph(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n", cant, det.codigoitem, det.descripcion,
+                    det.preciounitario, det.subtotal, det.importeigv, det.importetotal), "Item");
                 float importet = Util.ToNumber(det.importetotal);
                 float importeigvt = Util.ToNumber(det.importeigv);
                 float subtotalt = Util.ToNumber(det.subtotal);
@@ -179,7 +198,7 @@ namespace CreaReporte
             }
 
             section.AddParagraph("");
-            section.AddParagraph("");
+            var par = section.AddParagraph("");
 
             string subs = Convert.ToString(sub);
             string ts = Convert.ToString(t);
@@ -189,35 +208,37 @@ namespace CreaReporte
             string igvs2 = igvs.Substring(0, 5);
 
 
-            //HeaderFooter body = section.Footers.Primary;
-            
+            BarcodeWriter writer = new BarcodeWriter();
+            writer.Format = BarcodeFormat.QR_CODE;
+            var bit = writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", doc.rucempresa, doc.tipodocumento, doc.serienumero, doc.totaligv, doc.totalventa, doc.fechaemision, doc.hash));
+            bit.Save("qr.bmp");
+            var i = par.AddImage("qr.bmp");
+            i.Width = new Unit(150);
+            i.RelativeVertical = RelativeVertical.Line;
+
 
             Table table = new Table();
             table.Borders.Width = 0;
             table.Rows.LeftIndent = new Unit(330);
-            
 
+            Column column = table.AddColumn(Unit.FromCentimeter(3.5));
 
-            Column column = table.AddColumn(Unit.FromCentimeter(3.5) );
-            
             column = table.AddColumn(Unit.FromCentimeter(2));
-            
-
 
 
             column.Format.Alignment = ParagraphAlignment.Right;
 
 
-            
+
             Row row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
-           Cell cell = row.Cells[0];
+            Cell cell = row.Cells[0];
             cell.AddParagraph("SUB TOTAL S/.");
             cell = row.Cells[1];
             cell.AddParagraph(subs2);
 
 
-       
+
 
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
@@ -269,8 +290,8 @@ namespace CreaReporte
             cell.AddParagraph("");
             cell = row.Cells[1];
             cell.AddParagraph("");
-           
-       
+
+
 
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
@@ -281,9 +302,52 @@ namespace CreaReporte
 
             section.Add(table);
 
+
+
+            
+
+
         }
 
-        
+
+        private static void footer(Document document)
+        {
+            Section section2 = document.LastSection;
+            // section.PageSetup.BottomMargin=  new Unit(60, UnitType.Millimeter); 
+            section2.PageSetup.OddAndEvenPagesHeaderFooter = false;
+            section2.PageSetup.StartingNumber = 1;
+            HeaderFooter footer = section2.Footers.Primary;
+
+            
+
+            var paragraph = footer.AddParagraph();
+            paragraph.AddFormattedText("Para consultar el documento ingrese a portal.factura.com.pe/corpora\n", TextFormat.Bold);
+            paragraph.Format.Alignment = ParagraphAlignment.Right;
+            paragraph.Format.RightIndent = new Unit(400);
+
+            paragraph.AddFormattedText("Powered\n", TextFormat.Bold);
+            paragraph.Format.Alignment = ParagraphAlignment.Right;
+            paragraph.Format.RightIndent = new Unit(200);
+
+            var paragraph2 = footer.AddParagraph();
+            paragraph2.Format.Alignment = ParagraphAlignment.Left;
+            paragraph2.AddFormattedText(" \n\nby VIDA.SOFTWARE", TextFormat.Bold);
+            paragraph2.Format.Alignment = ParagraphAlignment.Right;
+            paragraph2.Format.RightIndent = new Unit(100);
+
+
+        }
+
+
+
+
+        private static object ImageToByte(Bitmap aztecBitmap)
+        {
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(img, typeof(byte[]));
+        }
+
+
 
         static void section(Document document)
         {

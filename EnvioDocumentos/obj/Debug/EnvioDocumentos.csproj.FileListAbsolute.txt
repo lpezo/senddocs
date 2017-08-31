@@ -44,3 +44,7 @@ E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\de\MigraDoc.DocumentObjectModel
 E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\de\MigraDoc.Rendering.resources.dll
 E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\de\PdfSharp.resources.dll
 E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\de\PdfSharp.Charting.resources.dll
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\BarcodeLib.dll
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\zxing.dll
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\zxing.pdb
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\zxing.xml
