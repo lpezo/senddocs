@@ -36,6 +36,7 @@ namespace CreaReporte
             Cabecera(document, doc, listadetalle);
             Cuerpo(document, doc, listadetalle);
             footer(document);
+           // barcode(document, doc, listadetalle);
 
             return document;
         }
@@ -93,11 +94,11 @@ namespace CreaReporte
             paragraph = header.AddParagraph("\n\n\n");
             paragraph.Style = "TOC";
             paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
-            paragraph.AddText("CARHUAS MIRANDA GLORIA");
+            paragraph.AddText(doc.razonsocialcliente);
             paragraph.AddFormattedText("\nRUC No\t", TextFormat.Bold);
-            paragraph.AddText("09509195");
+            paragraph.AddText(doc.numerodocumentocliente);
             paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
-            paragraph.AddText("AV.LAS LOMAS MZ.A LT.3 - Ñ Á ASOC.ALAMEDA DEL AGUSTINO");
+            paragraph.AddText(doc.direccioncliente);
 
             //Agregar Tabla
             paragraph.AddText("\n");
@@ -158,28 +159,13 @@ namespace CreaReporte
         private static void Cuerpo(Document document, Documento doc, List<Detalle> listadetalle)
         {
 
-
-          
-
-
-
-
-
-
-
             Section section = document.LastSection;
             section.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
-
-
             section.AddParagraph("Cant.\tCodigo\tDescripcion\tPre.unit.\tSub total\tI.G.V\tTotal\n\n", "Item");
-
-          
-
 
             double t = 0;
             double igv = 0;
             double sub = 0;
-
 
             foreach (var det in listadetalle)
             {
@@ -208,17 +194,12 @@ namespace CreaReporte
             string igvs2 = igvs.Substring(0, 5);
 
 
-            BarcodeWriter writer = new BarcodeWriter();
-            writer.Format = BarcodeFormat.QR_CODE;
-            var bit = writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", doc.rucempresa, doc.tipodocumento, doc.serienumero, doc.totaligv, doc.totalventa, doc.fechaemision, doc.hash));
-            bit.Save("qr.bmp");
-            var i = par.AddImage("qr.bmp");
-            i.Width = new Unit(150);
-            i.RelativeVertical = RelativeVertical.Line;
+           
 
 
             Table table = new Table();
             table.Borders.Width = 0;
+            document.DefaultPageSetup.TopMargin = new Unit(20, UnitType.Millimeter);
             table.Rows.LeftIndent = new Unit(330);
 
             Column column = table.AddColumn(Unit.FromCentimeter(3.5));
@@ -300,14 +281,59 @@ namespace CreaReporte
             cell = row.Cells[1];
             cell.AddParagraph(ts2);
 
-            section.Add(table);
+            TextFrame tablef = new TextFrame();
+            tablef.WrapFormat.DistanceTop = new Unit(-115);
+            tablef.WrapFormat.DistanceLeft = new Unit(-20);
 
+            BarcodeWriter writer = new BarcodeWriter();
+            writer.Format = BarcodeFormat.QR_CODE;
+            var bit = writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", doc.rucempresa, doc.tipodocumento, doc.serienumero, doc.totaligv, doc.totalventa, doc.fechaemision, doc.hash));
 
-
+            var f = tablef.AddImage("qr.bmp");
+            f.Width = new Unit(130);
             
+            section.Add(table);
+            section.Add(tablef);
+            var parr= section.AddParagraph("\n\n\t\t\tAutorizado mediante resolución Nro: 203 - 2015/SUNAT");
+            var parr2 = section.AddParagraph("\t\t\tRepresentación impresa de la boleta electrónica");
+            parr.Format.Alignment = ParagraphAlignment.Left;
+            parr2.Format.Alignment = ParagraphAlignment.Center;
+            var resume = section.AddParagraph("\n\nSON: OCHENTITRES CON 18/100 SOLES");
+            parr2.Format.Alignment = ParagraphAlignment.Left;
+
+
+
+
+
+
+
+
 
 
         }
+        /*private static void barcode(Document document, Documento doc, List<Detalle> listadetalle)
+                {
+                    Section sectionbarcode = document.LastSection;
+                    sectionbarcode.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
+
+                    HeaderFooter header = sectionbarcode.Headers.Primary;
+
+                    BarcodeWriter writer = new BarcodeWriter();
+                    writer.Format = BarcodeFormat.QR_CODE;
+                    var bit = writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", doc.rucempresa, doc.tipodocumento, doc.serienumero, doc.totaligv, doc.totalventa, doc.fechaemision, doc.hash));
+                    bit.Save("qr.bmp");
+                    var par = sectionbarcode.AddImage("qr.bmp");
+                    par.Width = new Unit(150);
+                    par.Top = new Unit(-50);
+                    // var i = par.AddImage("qr.bmp");
+                    //i.Width = new Unit(150);
+                    //i.Top = new Unit(6.5, UnitType.Centimeter);
+                    //i.Top = new Unit(60);
+                    //i.RelativeVertical = RelativeVertical.Line;
+
+
+                }*/
+
 
 
         private static void footer(Document document)
