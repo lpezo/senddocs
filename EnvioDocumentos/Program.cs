@@ -18,8 +18,9 @@ namespace EnvioDocumentos
             string   user = "", password = "", db = "", server = "";
             getvariablesconexion ( ref user,  ref password,  ref db,  ref server);
             SqlConnection connection = null;
-           connection = GetConnection(user, password, db, server);
-            string query = "select * from cpe_doc_cab where tipodocumento='01' and serienumero='F001-00001264' and fechaemision='2017-08-21'";
+           connection = GetConnection(user, password, db, server); 
+            string query = "select * from cpe_doc_cab where tipodocumento='01' and serienumero='F001-00000466' and fechaemision='2017-08-01'";
+            //'F001-00001264' and fechaemision = '2017-08-21
 
             var resultselect = string.Format(query);
 

@@ -52,11 +52,11 @@ namespace Data
         public string fechaemision { get; set; }
         public string tipodocumento { get; set; }
         public string serienumero { get; set; }
-
-
-
-        
-
+        public string puntopartida { get; set; }
+        public string puntollegada { get; set; }
+        public string codigochofer { get; set; }
+        public string codigovendedor { get; set; }
+        public string nombrevendedor { get; set; }
 
         public Documento()
         {
@@ -65,9 +65,12 @@ namespace Data
 
         public Documento(SqlDataReader reader)
         {
-        
-        
 
+            this.puntopartida = Util.GetString(reader, "puntoPartida");
+            this.puntollegada = Util.GetString(reader, "puntoLlegada");
+            this.codigochofer = Util.GetString(reader, "codigoChofer");
+            this.codigovendedor = Util.GetString(reader, "codigoVendedor");
+            this.nombrevendedor = Util.GetString(reader, "nombreVendedor");
             this.idcp = Util.GetInt(reader, "idcpe");
             this.rucempresa = Util.GetString(reader, "rucempresa");
             this.totalventa = Util.GetString(reader, "totalventa");

@@ -56,15 +56,18 @@ namespace CreaReporte
 
             HeaderFooter header = section.Headers.Primary;
             //header.AddParagraph("\tOdd Page Header");
+            //string ii = Path.Combine(cr, "logo.jpg");
 
+        
             TextFrame textFrame = new TextFrame();
+            
             //textFrame.MarginTop = new Unit(100, UnitType.Millimeter);
             textFrame.Width = new Unit(200);
             textFrame.Height = new Unit(100);
             textFrame.RelativeHorizontal = RelativeHorizontal.Margin;
             textFrame.RelativeVertical = RelativeVertical.Margin;
             textFrame.WrapFormat.DistanceLeft = new Unit(320);
-            textFrame.WrapFormat.DistanceTop = new Unit(-200);
+            textFrame.WrapFormat.DistanceTop = new Unit(-280);
             textFrame.LineFormat.Width = new Unit(1);
             textFrame.LineFormat.Color = MigraDoc.DocumentObjectModel.Colors.Black;
             //textFrame.FillFormat.Color = MigraDoc.DocumentObjectModel.Colors.Green;
@@ -79,26 +82,71 @@ namespace CreaReporte
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             header.Add(textFrame);
-
-
-            var paragraph = header.AddParagraph("Razón Social Empresa");
+            string cr = @"E:\ProgramaC#\senddocs\logo.jpg";
+            var paragraph = header.AddParagraph(doc.razonsocialempresa);
             paragraph.Style = "Heading2";
-            //document.LastSection.AddParagraph("Razón Social Empresa", "Heading2");
-            //Paragraph paragraph = document.LastSection.AddParagraph();
-
             paragraph = header.AddParagraph();
-            paragraph.AddText("AV. CAMINO REAL301 #602\n");
-            paragraph.AddText("SURCO, LIMA, LIMA\n");
-            paragraph.AddText("TELÉFONO: 12345678");
 
-            paragraph = header.AddParagraph("\n\n\n");
-            paragraph.Style = "TOC";
-            paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
-            paragraph.AddText(doc.razonsocialcliente);
-            paragraph.AddFormattedText("\nRUC No\t", TextFormat.Bold);
-            paragraph.AddText(doc.numerodocumentocliente);
-            paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
-            paragraph.AddText(doc.direccioncliente);
+            if (!File.Exists(cr))
+            {
+
+                paragraph.AddText(doc.direccionempresa + "\n");
+                paragraph.AddText(doc.departamentoempresa + "," + doc.provinciaempresa + "," + doc.distritoempresa + "\n");
+                paragraph.AddText(doc.telefono1Empresa + "\n");
+            }else
+            {
+                TextFrame tflogo = new TextFrame();
+                var tl = tflogo.AddParagraph();
+                tflogo.Width = new Unit(250);
+                tflogo.Height = new Unit(100);
+                //tflogo.RelativeHorizontal = RelativeHorizontal.Margin;
+                //tflogo.RelativeVertical = RelativeVertical.Margin;
+                tflogo.WrapFormat.DistanceTop=new Unit(-10);
+                tflogo.WrapFormat.DistanceLeft = new Unit(80);
+                tflogo.WrapFormat.DistanceBottom = new Unit(-40);
+                tflogo.AddParagraph(doc.direccionempresa + "\n");
+               tflogo.AddParagraph(doc.departamentoempresa + "," + doc.provinciaempresa + "," + doc.distritoempresa + "\n");
+                tflogo.AddParagraph(doc.telefono1Empresa + "\n");
+                //paragraph.AddText(doc.direccionempresa + "\n");
+                //paragraph.AddText(doc.departamentoempresa + "," + doc.provinciaempresa + "," + doc.distritoempresa + "\n");
+                //paragraph.AddText(doc.telefono1Empresa + "\n");
+                header.Add(tflogo);
+            }
+            var serien=doc.serienumero.Substring(0,1);
+            if (serien == "B")
+            {
+                paragraph = header.AddParagraph("\n\n\n");
+                paragraph.Style = "TOC";
+                paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
+                paragraph.AddText(doc.razonsocialcliente);
+                paragraph.AddFormattedText("\nDNI No\t", TextFormat.Bold);
+                paragraph.AddText(doc.numerodocumentocliente);
+                paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
+                paragraph.AddText(doc.direccioncliente);
+                paragraph.AddFormattedText("\nPARTIDA\t", TextFormat.Bold);
+                paragraph.AddText(doc.puntopartida);
+            }
+            else if (serien == "F")
+            {
+                paragraph = header.AddParagraph("\n\n\n");
+                paragraph.Style = "TOC";
+                paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
+                paragraph.AddText(doc.razonsocialcliente);
+                paragraph.AddFormattedText("\nRUC No\t", TextFormat.Bold);
+                paragraph.AddText(doc.numerodocumentocliente);
+                paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
+                paragraph.AddText(doc.direccioncliente);
+                paragraph.AddFormattedText("\nPARTIDA\t", TextFormat.Bold);
+                paragraph.AddText(doc.puntopartida);
+                paragraph.AddFormattedText("\nLLEGADA\t", TextFormat.Bold);
+                paragraph.AddText(doc.puntollegada);
+                paragraph.AddFormattedText("\nTRASNPORTE\t", TextFormat.Bold);
+                paragraph.AddText(doc.codigochofer);
+                paragraph.AddFormattedText("\nCOD.VEND\t", TextFormat.Bold);
+                paragraph.AddText(doc.codigovendedor);
+                paragraph.AddFormattedText("\nNOM.VEND\t", TextFormat.Bold);
+                paragraph.AddText(doc.nombrevendedor);
+            }
 
             //Agregar Tabla
             paragraph.AddText("\n");
@@ -160,7 +208,7 @@ namespace CreaReporte
         {
 
             Section section = document.LastSection;
-            section.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
+            section.PageSetup.TopMargin = new Unit(110, UnitType.Millimeter);
             section.AddParagraph("Cant.\tCodigo\tDescripcion\tPre.unit.\tSub total\tI.G.V\tTotal\n\n", "Item");
 
             double t = 0;
@@ -300,9 +348,20 @@ namespace CreaReporte
             parr2.Format.Alignment = ParagraphAlignment.Center;
             var resume = section.AddParagraph("\n\nSON: OCHENTITRES CON 18/100 SOLES");
             parr2.Format.Alignment = ParagraphAlignment.Left;
+            string cr = @"E:\ProgramaC#\senddocs\logo.jpg";
 
 
+            if (File.Exists(cr))
+            {
 
+                Section sectionlogo = document.LastSection;
+                TextFrame logo = new TextFrame();
+                logo.WrapFormat.DistanceTop = new Unit(-470);
+                var im = logo.AddImage(@"E:\ProgramaC#\senddocs\logo.jpg");
+                im.Width = new Unit(75);
+                section.Add(logo);
+
+            }
 
 
 
