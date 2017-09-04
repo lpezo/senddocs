@@ -57,7 +57,6 @@ namespace Data
         public string codigochofer { get; set; }
         public string codigovendedor { get; set; }
         public string nombrevendedor { get; set; }
-
         public Documento()
         {
 
@@ -65,7 +64,7 @@ namespace Data
 
         public Documento(SqlDataReader reader)
         {
-
+            this.sustentonotacredeb = Util.GetString(reader,"sustentonotacredeb");
             this.puntopartida = Util.GetString(reader, "puntoPartida");
             this.puntollegada = Util.GetString(reader, "puntoLlegada");
             this.codigochofer = Util.GetString(reader, "codigoChofer");

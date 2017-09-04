@@ -54,20 +54,49 @@ namespace CreaReporte
             section.PageSetup.OddAndEvenPagesHeaderFooter = false;
             section.PageSetup.StartingNumber = 1;
 
+            
+
+
             HeaderFooter header = section.Headers.Primary;
             //header.AddParagraph("\tOdd Page Header");
             //string ii = Path.Combine(cr, "logo.jpg");
+            string cr = @"E:\ProgramaC#\senddocs\logo.jpg";
+            if (File.Exists(cr))
+            {
 
-        
+                Section sectionlogo = document.LastSection;
+                TextFrame logo = new TextFrame();
+                logo.RelativeHorizontal = RelativeHorizontal.Margin;
+                logo.RelativeVertical = RelativeVertical.Margin;
+                var serienn = doc.serienumero.Substring(0, 1);
+                if (doc.tipodocumento=="01") {
+                    logo.WrapFormat.DistanceTop = new Unit(-230);
+            }
+                else if (doc.tipodocumento == "03") { logo.WrapFormat.DistanceTop = new Unit(-180); }
+                else if (doc.tipodocumento == "07") { logo.WrapFormat.DistanceTop = new Unit(-220); }
+                var im = logo.AddImage(@"E:\ProgramaC#\senddocs\logo.jpg");
+                im.Width = new Unit(75);
+                section.Add(logo);
+
+            }
             TextFrame textFrame = new TextFrame();
-            
+       
             //textFrame.MarginTop = new Unit(100, UnitType.Millimeter);
             textFrame.Width = new Unit(200);
             textFrame.Height = new Unit(100);
             textFrame.RelativeHorizontal = RelativeHorizontal.Margin;
             textFrame.RelativeVertical = RelativeVertical.Margin;
             textFrame.WrapFormat.DistanceLeft = new Unit(320);
-            textFrame.WrapFormat.DistanceTop = new Unit(-280);
+             if (doc.tipodocumento == "01") {
+                textFrame.WrapFormat.DistanceTop = new Unit(-260); }
+            else if (doc.tipodocumento == "03")
+            {
+                textFrame.WrapFormat.DistanceTop = new Unit(-210);
+            }
+            else if (doc.tipodocumento == "07")
+            {
+                textFrame.WrapFormat.DistanceTop = new Unit(-230);
+            }
             textFrame.LineFormat.Width = new Unit(1);
             textFrame.LineFormat.Color = MigraDoc.DocumentObjectModel.Colors.Black;
             //textFrame.FillFormat.Color = MigraDoc.DocumentObjectModel.Colors.Green;
@@ -75,14 +104,35 @@ namespace CreaReporte
             var texto = textFrame.AddParagraph("RUC:" + doc.rucempresa);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
-            texto = textFrame.AddParagraph("FACTURA ELECTRÓNICA");
-            texto.Format.Alignment = ParagraphAlignment.Center;
-            texto.Style = "Heading1";
+            if (doc.tipodocumento=="01")
+            {
+                texto = textFrame.AddParagraph("FACTURA ELECTRÓNICA");
+                texto.Format.Alignment = ParagraphAlignment.Center;
+                texto.Style = "Heading1";
+            }
+            else if (doc.tipodocumento== "03")
+            {
+
+
+                texto = textFrame.AddParagraph("BOLETA ELECTRÓNICA");
+
+                texto.Format.Alignment = ParagraphAlignment.Center;
+                texto.Style = "Heading1";
+            }
+            else if (doc.tipodocumento == "07")
+            {
+
+
+                texto = textFrame.AddParagraph("Nota de Credito Electronica");
+
+                texto.Format.Alignment = ParagraphAlignment.Center;
+                texto.Style = "Heading1";
+            }
             texto = textFrame.AddParagraph("\n" + doc.serienumero);
             texto.Format.Alignment = ParagraphAlignment.Center;
             texto.Style = "Heading1";
             header.Add(textFrame);
-            string cr = @"E:\ProgramaC#\senddocs\logo.jpg";
+           //string cr = @"E:\ProgramaC#\senddocs\logo.jpg";
             var paragraph = header.AddParagraph(doc.razonsocialempresa);
             paragraph.Style = "Heading2";
             paragraph = header.AddParagraph();
@@ -101,9 +151,10 @@ namespace CreaReporte
                 tflogo.Height = new Unit(100);
                 //tflogo.RelativeHorizontal = RelativeHorizontal.Margin;
                 //tflogo.RelativeVertical = RelativeVertical.Margin;
+              
                 tflogo.WrapFormat.DistanceTop=new Unit(-10);
                 tflogo.WrapFormat.DistanceLeft = new Unit(80);
-                tflogo.WrapFormat.DistanceBottom = new Unit(-40);
+                tflogo.WrapFormat.DistanceBottom = new Unit(-60);
                 tflogo.AddParagraph(doc.direccionempresa + "\n");
                tflogo.AddParagraph(doc.departamentoempresa + "," + doc.provinciaempresa + "," + doc.distritoempresa + "\n");
                 tflogo.AddParagraph(doc.telefono1Empresa + "\n");
@@ -112,8 +163,8 @@ namespace CreaReporte
                 //paragraph.AddText(doc.telefono1Empresa + "\n");
                 header.Add(tflogo);
             }
-            var serien=doc.serienumero.Substring(0,1);
-            if (serien == "B")
+
+            if (doc.tipodocumento=="03")
             {
                 paragraph = header.AddParagraph("\n\n\n");
                 paragraph.Style = "TOC";
@@ -126,7 +177,7 @@ namespace CreaReporte
                 paragraph.AddFormattedText("\nPARTIDA\t", TextFormat.Bold);
                 paragraph.AddText(doc.puntopartida);
             }
-            else if (serien == "F")
+            else if (doc.tipodocumento=="01")
             {
                 paragraph = header.AddParagraph("\n\n\n");
                 paragraph.Style = "TOC";
@@ -147,6 +198,20 @@ namespace CreaReporte
                 paragraph.AddFormattedText("\nNOM.VEND\t", TextFormat.Bold);
                 paragraph.AddText(doc.nombrevendedor);
             }
+            if (doc.tipodocumento == "07")
+            {
+                paragraph = header.AddParagraph("\n\n\n");
+                paragraph.Style = "TOC";
+                paragraph.AddFormattedText("\nSEÑOR(es)\t", TextFormat.Bold);
+                paragraph.AddText(doc.razonsocialcliente);
+                paragraph.AddFormattedText("\nRUC No\t", TextFormat.Bold);
+                paragraph.AddText(doc.numerodocumentocliente);
+                paragraph.AddFormattedText("\nDIRECCIÓN\t", TextFormat.Bold);
+                paragraph.AddText(doc.direccioncliente);
+                paragraph.AddFormattedText("\nDOC.AFECTADO\t", TextFormat.Bold);
+                paragraph.AddText(doc.serienumeroafectado+ "\n");
+                paragraph.AddText(doc.sustentonotacredeb);
+            }
 
             //Agregar Tabla
             paragraph.AddText("\n");
@@ -156,6 +221,7 @@ namespace CreaReporte
 
             Table table = new Table();
             table.Borders.Width = 0.75;
+            
 
 
             Column column = table.AddColumn(Unit.FromCentimeter(4));
@@ -198,6 +264,21 @@ namespace CreaReporte
 
             //table.SetEdge(0, 0, 2, 3, Edge.Box, BorderStyle.Single, 1.5, Colors.Black);
 
+            //string cr = @"E:\ProgramaC#\senddocs\logo.jpg";
+
+
+            //if (File.Exists(cr))
+            //{
+
+            //    Section sectionlogo = document.LastSection;
+            //    TextFrame logo = new TextFrame();
+            //    logo.WrapFormat.DistanceTop = new Unit(-475);
+            //    var im = logo.AddImage(@"E:\ProgramaC#\senddocs\logo.jpg");
+            //    im.Width = new Unit(75);
+            //    section.Add(logo);
+
+            //}
+
             header.Add(table);
 
 
@@ -208,9 +289,19 @@ namespace CreaReporte
         {
 
             Section section = document.LastSection;
-            section.PageSetup.TopMargin = new Unit(110, UnitType.Millimeter);
+            if (doc.tipodocumento == "01")
+            {
+                section.PageSetup.TopMargin = new Unit(103, UnitType.Millimeter);
+            }
+            else if (doc.tipodocumento=="03") { section.PageSetup.TopMargin = new Unit(87, UnitType.Millimeter); }
+            else if (doc.tipodocumento=="07") { section.PageSetup.TopMargin = new Unit(93, UnitType.Millimeter); }
+            //TextFrame cuerpo = new TextFrame();
+            //cuerpo.Width = new Unit(600);
+            //cuerpo.WrapFormat.DistanceTop = new Unit(-10);
+            //cuerpo.WrapFormat.DistanceBottom = new Unit(-50);
+            //var cuerpodata = cuerpo.AddParagraph("Cant.\tCodigo\tDescripcion\tPre.unit.\tSub total\tI.G.V\tTotal\n\n");
+            //section.Add(cuerpo);
             section.AddParagraph("Cant.\tCodigo\tDescripcion\tPre.unit.\tSub total\tI.G.V\tTotal\n\n", "Item");
-
             double t = 0;
             double igv = 0;
             double sub = 0;
@@ -346,80 +437,56 @@ namespace CreaReporte
             var parr2 = section.AddParagraph("\t\t\tRepresentación impresa de la boleta electrónica");
             parr.Format.Alignment = ParagraphAlignment.Left;
             parr2.Format.Alignment = ParagraphAlignment.Center;
-            var resume = section.AddParagraph("\n\nSON: OCHENTITRES CON 18/100 SOLES");
+            NumToWords totalLetras = new NumToWords();
+            string numero = Convert.ToString(ts2);
+            string TotalEnLetras = totalLetras.Convertir(numero, true);
+            parr2.Section.AddParagraph("\nSON:" + TotalEnLetras);
+
             parr2.Format.Alignment = ParagraphAlignment.Left;
-            string cr = @"E:\ProgramaC#\senddocs\logo.jpg";
-
-
-            if (File.Exists(cr))
-            {
-
-                Section sectionlogo = document.LastSection;
-                TextFrame logo = new TextFrame();
-                logo.WrapFormat.DistanceTop = new Unit(-470);
-                var im = logo.AddImage(@"E:\ProgramaC#\senddocs\logo.jpg");
-                im.Width = new Unit(75);
-                section.Add(logo);
-
-            }
-
-
-
-
-
-
+        
 
         }
-        /*private static void barcode(Document document, Documento doc, List<Detalle> listadetalle)
-                {
-                    Section sectionbarcode = document.LastSection;
-                    sectionbarcode.PageSetup.TopMargin = new Unit(80, UnitType.Millimeter);
-
-                    HeaderFooter header = sectionbarcode.Headers.Primary;
-
-                    BarcodeWriter writer = new BarcodeWriter();
-                    writer.Format = BarcodeFormat.QR_CODE;
-                    var bit = writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", doc.rucempresa, doc.tipodocumento, doc.serienumero, doc.totaligv, doc.totalventa, doc.fechaemision, doc.hash));
-                    bit.Save("qr.bmp");
-                    var par = sectionbarcode.AddImage("qr.bmp");
-                    par.Width = new Unit(150);
-                    par.Top = new Unit(-50);
-                    // var i = par.AddImage("qr.bmp");
-                    //i.Width = new Unit(150);
-                    //i.Top = new Unit(6.5, UnitType.Centimeter);
-                    //i.Top = new Unit(60);
-                    //i.RelativeVertical = RelativeVertical.Line;
-
-
-                }*/
+   
 
 
 
         private static void footer(Document document)
         {
             Section section2 = document.LastSection;
-            // section.PageSetup.BottomMargin=  new Unit(60, UnitType.Millimeter); 
             section2.PageSetup.OddAndEvenPagesHeaderFooter = false;
             section2.PageSetup.StartingNumber = 1;
+            section2.PageSetup.BottomMargin = new Unit(1, UnitType.Centimeter);
             HeaderFooter footer = section2.Footers.Primary;
-
             
+            ////TextFrame framefooter = new TextFrame();
+            ////framefooter.Width = new Unit(500);
+            ////framefooter.Height = new Unit(5);
+            ////framefooter.WrapFormat.DistanceBottom= new Unit(-200);
+            ////var par = framefooter.AddParagraph();
+
+            ////par.AddFormattedText("Para consultar el documento ingrese a portal.factura.com.pe/corpora");
+            ////par.Format.Alignment = ParagraphAlignment.Left;
+            ////var parr = framefooter.AddParagraph();
+            ////parr.AddFormattedText("Powered");
+            ////parr.Format.Alignment = ParagraphAlignment.Right;
+            ////parr.Format.RightIndent = new Unit(100);
+            ////var parrr = framefooter.AddParagraph();
+            ////parrr.AddFormattedText("\t\t\tby VIDA.SOFTWARE");
+            ////parrr.Format.Alignment = ParagraphAlignment.Right;
+
+            //section2.Add(framefooter);
+
 
             var paragraph = footer.AddParagraph();
-            paragraph.AddFormattedText("Para consultar el documento ingrese a portal.factura.com.pe/corpora\n", TextFormat.Bold);
-            paragraph.Format.Alignment = ParagraphAlignment.Right;
-            paragraph.Format.RightIndent = new Unit(400);
+            //paragraph.AddFormattedText("\n\n\n\n\n");
+            paragraph.AddFormattedText("Para consultar el documento ingrese a portal.factura.com.pe/corpora\n\t\t\t\tPowered\n\t\t\t\t\tby VIDA.SOFTWARE");
+            paragraph.Format.Alignment = ParagraphAlignment.Left;
 
-            paragraph.AddFormattedText("Powered\n", TextFormat.Bold);
-            paragraph.Format.Alignment = ParagraphAlignment.Right;
-            paragraph.Format.RightIndent = new Unit(200);
 
-            var paragraph2 = footer.AddParagraph();
-            paragraph2.Format.Alignment = ParagraphAlignment.Left;
-            paragraph2.AddFormattedText(" \n\nby VIDA.SOFTWARE", TextFormat.Bold);
-            paragraph2.Format.Alignment = ParagraphAlignment.Right;
-            paragraph2.Format.RightIndent = new Unit(100);
-
+            //NumToWords totalWord = new NumToWords();
+            //string numero = "57.60";
+            //Console.WriteLine(totalWord.Convertir(numero,true));
+            //Console.ReadLine();
 
         }
 
