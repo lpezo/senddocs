@@ -16,6 +16,7 @@ using System.Drawing;
 using System.IO;
 using ZXing;
 using System.ComponentModel;
+using System.Xml;
 
 namespace CreaReporte
 {
@@ -27,6 +28,8 @@ namespace CreaReporte
 
         public static Document CreateDocument(Documento doc, List<Detalle> listadetalle)
         {
+            
+            
             // Create a new MigraDoc document
             Document document = new Document();
             document.Info.Title = "Documento Electrónico";
@@ -73,7 +76,7 @@ namespace CreaReporte
                     logo.WrapFormat.DistanceTop = new Unit(-230);
             }
                 else if (doc.tipodocumento == "03") { logo.WrapFormat.DistanceTop = new Unit(-180); }
-                else if (doc.tipodocumento == "07") { logo.WrapFormat.DistanceTop = new Unit(-220); }
+                else if (doc.tipodocumento == "07") { logo.WrapFormat.DistanceTop = new Unit(-200); }
                 var im = logo.AddImage(@"E:\ProgramaC#\senddocs\logo.jpg");
                 im.Width = new Unit(75);
                 section.Add(logo);
@@ -312,12 +315,12 @@ namespace CreaReporte
 
                 section.AddParagraph(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n", cant, det.codigoitem, det.descripcion,
                     det.preciounitario, det.subtotal, det.importeigv, det.importetotal), "Item");
-                float importet = Util.ToNumber(det.importetotal);
-                float importeigvt = Util.ToNumber(det.importeigv);
-                float subtotalt = Util.ToNumber(det.subtotal);
-                t = t + importet;
-                igv = igv + importeigvt;
-                sub = sub + subtotalt;
+                //float importet = Util.ToNumber(det.importetotal);
+                //float importeigvt = Util.ToNumber(det.importeigv);
+                //float subtotalt = Util.ToNumber(det.subtotal);
+                //t = t + importet;
+                //igv = igv + importeigvt;
+                //sub = sub + subtotalt;
 
 
             }
@@ -325,12 +328,12 @@ namespace CreaReporte
             section.AddParagraph("");
             var par = section.AddParagraph("");
 
-            string subs = Convert.ToString(sub);
-            string ts = Convert.ToString(t);
-            string igvs = Convert.ToString(igv);
-            string subs2 = subs.Substring(0, 5);
-            string ts2 = ts.Substring(0, 5);
-            string igvs2 = igvs.Substring(0, 5);
+            ////string subs = Convert.ToString(sub);
+            ////string ts = Convert.ToString(t);
+            ////string igvs = Convert.ToString(igv);
+            ////string subs2 = subs.Substring(0, 5);
+            ////string ts2 = ts.Substring(0, 5);
+            ////string igvs2 = igvs.Substring(0, 5);
 
 
            
@@ -355,7 +358,7 @@ namespace CreaReporte
             Cell cell = row.Cells[0];
             cell.AddParagraph("SUB TOTAL S/.");
             cell = row.Cells[1];
-            cell.AddParagraph(subs2);
+            cell.AddParagraph(doc.subtotal);
 
 
 
@@ -365,21 +368,21 @@ namespace CreaReporte
             cell = row.Cells[0];
             cell.AddParagraph("DSCTO GLOBAL S/.");
             cell = row.Cells[1];
-            cell.AddParagraph("");
+            cell.AddParagraph(doc.totaldescuentos);
 
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
             cell = row.Cells[0];
             cell.AddParagraph("OP. GRAVADA S/.");
             cell = row.Cells[1];
-            cell.AddParagraph("");
+            cell.AddParagraph(doc.totalgravadas);
 
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
             cell = row.Cells[0];
             cell.AddParagraph("OP.EXONERADA S/.");
             cell = row.Cells[1];
-            cell.AddParagraph("");
+            cell.AddParagraph(doc.totalexoneradas);
 
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
@@ -394,15 +397,14 @@ namespace CreaReporte
             cell = row.Cells[0];
             cell.AddParagraph("OP.GRATUITA S/.");
             cell = row.Cells[1];
-
+            cell.AddParagraph(doc.totalgratuitas);
 
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
             cell = row.Cells[0];
             cell.AddParagraph("IGV 18% S/.");
             cell = row.Cells[1];
-            cell.AddParagraph(igvs2);
-            section.AddParagraph("");
+            cell.AddParagraph(doc.totaligv);
 
             row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Right;
@@ -418,7 +420,7 @@ namespace CreaReporte
             cell = row.Cells[0];
             cell.AddParagraph("TOTAL S/.");
             cell = row.Cells[1];
-            cell.AddParagraph(ts2);
+            cell.AddParagraph(doc.totalventa);
 
             TextFrame tablef = new TextFrame();
             tablef.WrapFormat.DistanceTop = new Unit(-115);
@@ -438,7 +440,7 @@ namespace CreaReporte
             parr.Format.Alignment = ParagraphAlignment.Left;
             parr2.Format.Alignment = ParagraphAlignment.Center;
             NumToWords totalLetras = new NumToWords();
-            string numero = Convert.ToString(ts2);
+            string numero = Convert.ToString(doc.totalventa);
             string TotalEnLetras = totalLetras.Convertir(numero, true);
             parr2.Section.AddParagraph("\nSON:" + TotalEnLetras);
 
@@ -609,4 +611,7 @@ namespace CreaReporte
 
 
     }
+
+    
+         
 }

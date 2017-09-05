@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="crearDirectorio.cs" />
     <Compile Include="NumToWords.cs" />
     <Compile Include="DocPdf.cs" />
     <Compile Include="Documents.cs" />
