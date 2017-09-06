@@ -389,7 +389,7 @@ namespace CreaReporte
             cell = row.Cells[0];
             cell.AddParagraph("OP.INAFECTA S/.");
             cell = row.Cells[1];
-            cell.AddParagraph("");
+            cell.AddParagraph(doc.totalnogravada);
 
 
             row = table.AddRow();
