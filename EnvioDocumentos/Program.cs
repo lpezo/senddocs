@@ -12,14 +12,18 @@ namespace EnvioDocumentos
 {
     class Program
     {
+         static string mee=null;
+
         static void Main(string[] args)
         {
-
+             
+            string dir = @"E:\ProgramaC#\senddocs\logs\";
+            string logs = Path.Combine(dir, "logs_sendSunat.txt");
             string user = "", password = "", db = "", server = "";
             getvariablesconexion(ref user, ref password, ref db, ref server);
             SqlConnection connection = null;
             connection = GetConnection(user, password, db, server);
-            string query = "select top 300 * from cpe_doc_cab where estadoRegistro = 'S' or (estadoregistro = 'C' and (encustodia = 0 or encustodia is null)) order by fechaestado;";
+            string query = "select top 5 * from cpe_doc_cab where estadoRegistro = 'C' or (estadoregistro = 'C' and (encustodia = 0 or encustodia is null)) order by fechaestado;";
             //string query = "select * from cpe_doc_cab where tipodocumento='01' and serienumero='F001-00000553' and fechaemision='2017-08-03'";
             //'F001-00001264' and fechaemision = '2017-08-21
 
@@ -33,18 +37,21 @@ namespace EnvioDocumentos
             var reader = command.ExecuteReader();
 
             var list = new List<Documento>();
-            
-            
+
+
+
+            var listaErrores = new List<Documento>();
 #if !DEBUG
             try
             {
 #endif
+  
                 while (reader.Read())
                 {
                     var document = new Documento(reader);
                     list.Add(document);
                     Console.WriteLine(document);
-                }
+                } 
 #if !DEBUG
             }
             catch (Exception ex)
@@ -57,16 +64,63 @@ namespace EnvioDocumentos
 #if !DEBUG
             }
 #endif
-
+           
                 var progPdf = new DocPdf();
+            using (StreamWriter sw = new StreamWriter(logs, false, Encoding.Default)
+
+)
+            {
                 foreach (var doc in list)
                 {
+
+                    try
+                    {
+
+                        string insert = "insert into db_sunat (serienumero, fecha, idcp) VALUES (" + doc.serienumero + "," + doc.fechaemision + "," + doc.idcp + ")";
+                        var insertt = string.Format(insert);
+                        var commandInsert = new SqlCommand(insertt, connection);
+                        commandInsert.ExecuteNonQuery();
+                    }
+
+                    catch (Exception ex)
+                    {
+                        if (ex.Message != null)
+                        {
+                            mee = ex.Message;
+                        }
+
+                    }
+
+
+                    string upt = "update cpe_doc_cab set estadoregistro='S' where serienumero=" + doc.serienumero + "";
+                    string uptError = "update cpe_doc_cab set estadoregistro='E' , mensajeerror=+" + mee + "+ where serienumero=" + doc.serienumero + "";
+                    if (mee != null)
+                    {
+                         var update = string.Format(uptError);
+                    }
+                    else {
+                        var  update = string.Format(upt);
+                    }
+                    // var comandoUpt = new SqlCommand(update, connection);
+                    //comandoUpt.ExecuteNonQuery();
                     var listadetalle = GetDetalle(doc.idcp, connection);
                     progPdf.Visualiza(doc, listadetalle);
-                }
+                    if (mee != "") { 
+                        sw.WriteLine("Se proceso el siguiente documento a Sunat:\t" + doc.serienumero + "\t" +uptError);
 
-            //Console.WriteLine("Presione ENTER para continuar...");
-            //Console.ReadLine();
+                }
+                    else
+                    {
+                        sw.WriteLine("Se proceso el siguiente documento a Sunat:\t" + doc.serienumero + "\t" +upt);
+
+                    }
+                    //Console.WriteLine(doc.serienumero);
+
+                    //Console.ReadLine();
+
+                } }
+
+      
 
             connection.Close();
             
