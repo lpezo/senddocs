@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Xml;
 
 namespace EnvioDocumentos
 {
@@ -67,6 +68,7 @@ namespace EnvioDocumentos
             var interno = GetXml(ref config, "ODBC");
             user = GetXml(ref interno, "USUARIO");
             pwd = GetXml(ref interno, "CLAVESU");
+            Console.WriteLine();
             return "";
 
         }
@@ -143,49 +145,121 @@ namespace EnvioDocumentos
             return lista;
         }
 
+        //protected string EnviarSoap(string fsoap, int numserver)
+        //{
+        //    var webAddr = "https://www.sunat.gob.pe/ol-ti-itcpfegem/billService";
+        //    //var _url = "http://xxxxxxxxx/Service1.asmx";
+        //    //var _action = "http://xxxxxxxx/Service1.asmx?op=HelloWorld";
+
+        //    XmlDocument soapEnvelopeXml = CreateSoapEnvelope();
+        //    var webRequest = (HttpWebRequest)WebRequest.Create(webAddr);
+        //    InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
+
+        //    // begin async call to web request.
+        //    IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
+
+        //    // suspend this thread until call is complete. You might want to
+        //    // do something usefull here like update your UI.
+        //    asyncResult.AsyncWaitHandle.WaitOne();
+
+        //    // get the response from the completed web request.
+        //    string soapResult;
+        //    using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
+        //    {
+        //        using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
+        //        {
+        //            soapResult = rd.ReadToEnd();
+        //        }
+
+        //        Console.Write(soapResult);
+        //        Console.ReadLine();
+        //        return soapResult;
+        //    }
+
+        //}
+
+        //private static HttpWebRequest CreateWebRequest(string url, string action)
+        //{
+        //    HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+        //    webRequest.Headers.Add("SOAPAction", action);
+        //    webRequest.ContentType = "text/xml;charset=\"utf-8\"";
+        //    webRequest.Accept = "text/xml";
+        //    webRequest.Method = "POST";
+        //    return webRequest;
+        //}
+
+        //private static XmlDocument CreateSoapEnvelope(string usuario, string clave, string filezip, string tipo)
+        //{
+        //    filezip = "20114208346-01-F001-00001711.xml.zip.soap";
+        //    var bat64 = Util.GetBase64(filezip);
+        //    string nombre = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(filezip));
+        //    XmlDocument soapEnvelopeDocument = new XmlDocument();
+        //    string strsoap = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        //    <soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:ser=""http://service.sunat.gob.pe/"" xmlns:wsse =""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd/"">
+        //      <soapenv:Header>
+        //        <wsse:Security>
+        //          <wsse:UsernameToken>
+        //           <wsse:Username>20600337832FACTURA2</wsse:Username>
+        //            <wsse:Password>krx32aFF</wsse:Password>
+        //          </wsse:UsernameToken></wsse:Security>
+        //      </soapenv:Header>
+        //      <soapenv:Body>
+        //        <ser:{2}>
+        //            <fileName>20114208346-01-F001-00001711.xml.zip.soap</fileName>
+        //            <contentFile>{4}</contentFile>
+        //          </ser:{2}>
+        //        </soapenv:Body></soapenv:Envelope>";
+
+        //    soapEnvelopeDocument.LoadXml(strsoap);
+        //    return string.Format(srtsoa,  usuario, clave, tipo, nombre + ".zip", bat64);
+        //}
+
+        //private static void InsertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml, HttpWebRequest webRequest)
+        //{
+        //    using (Stream stream = webRequest.GetRequestStream())
+        //    {
+        //        soapEnvelopeXml.Save(stream);
+        //    }
+        //}
 
         protected string EnviarSoap(string fsoap, int numserver)
-        {
-            //Prueba 
-            //var webAddr = "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService";
-            //Produccion
+         {
+             //Prueba 
+             //var webAddr = "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService";
+             //Produccion
 
-            //var webAddr = "https://www.sunat.gob.pe/ol-ti-itcpfegem/billService";
-            var webAddr = "https://www.sunat.gob.pe/ol-it-wsconscpegem/billConsultService?wsdl";
+             var webAddr = "https://www.sunat.gob.pe/ol-ti-itcpfegem/billService";
 
-            string ssoap = "";
-            using (var sr = new StreamReader(fsoap, Encoding.Default))
-            {
-                ssoap = sr.ReadToEnd();
-            }
+             string ssoap = "";
+             using (var sr = new StreamReader(fsoap, Encoding.Default))
+             {
+                 ssoap = sr.ReadToEnd();
+             }
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
-            httpWebRequest.AllowWriteStreamBuffering = false;
-            httpWebRequest.ContentType = "text/xml;charset=UTF-8";
-            httpWebRequest.Accept = "text/xml";
-            httpWebRequest.ContentLength = ssoap.Length;
-            httpWebRequest.Credentials = CredentialCache.DefaultCredentials;
-            httpWebRequest.Method = "POST";
-            httpWebRequest.Headers.Add("SOAPAction", "sendBill");
+             var httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
+             //httpWebRequest.AllowWriteStreamBuffering = false;
+             httpWebRequest.ContentType = "text/xml;charset=UTF-8";
+             httpWebRequest.Accept = "text/xml";
+             httpWebRequest.Method = "POST";
+             httpWebRequest.Headers.Add("SOAPAction", "sendBill");
+             log.write("\t->" + webAddr);
 
-            log.write("\t->" + webAddr);
+             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+             {
+                 streamWriter.Write(ssoap);
+                 streamWriter.Flush();
+                 streamWriter.Close();
+             }
 
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                streamWriter.Write(ssoap);
-                streamWriter.Flush();
-                streamWriter.Close();
-            }
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                var result = streamReader.ReadToEnd();
-                if (!string.IsNullOrEmpty(result))
-                    log.write(result);
-                return result;
-            }
-        }
+             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+             {
+                 var result = streamReader.ReadToEnd();
+                 if (!string.IsNullOrEmpty(result))
+                     log.write(result);
+                 return result;
+             }
+         }
 
 
 
@@ -194,10 +268,10 @@ namespace EnvioDocumentos
 
             var bat64 = Util.GetBase64(filezip);
             string nombre = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(filezip));
+           
 
-
-            var strsoap = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.sunat.gob.pe/\"" +
-            " xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd/\">" +
+            var strsoap = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.sunat.gob.pe/\" xmlns:wsse =\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd/\">" +
             "  <soapenv:Header>" +
             "    <wsse:Security>" +
             "      <wsse:UsernameToken>" +

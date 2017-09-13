@@ -27,8 +27,9 @@ namespace EnvioDocumentos
 
                 log.write("ENVIO A SUNAT...");
 
-                string query = "select  top 1 * from cpe_doc_cab where estadoRegistro = 'L' or (estadoregistro = 'C' and (encustodia = 0 or encustodia is null)) order by fechaestado;";
-                
+                string query = "select  top 1 * from cpe_doc_cab where serienumero='F001-00001711' and tipodocumento='01'"; //estadoRegistro = 'L' or (estadoregistro = 'C' and (encustodia = 0 or encustodia is null)) order by fechaestado;";
+
+
                 GetConecciones();
 
                 var resultselect = string.Format(query);
@@ -91,7 +92,7 @@ namespace EnvioDocumentos
                             progPdf.Visualiza(cadadoc, listadetalle);
                             Console.WriteLine("\t{0}", archzip);
                             var filesoap = archzip+".soap";
-                            
+
                             using (var sw = new StreamWriter(filesoap, false, Encoding.UTF8))
                             {
                                 var soap = GetSoap(user, pwd, archzip, "sendBill");
