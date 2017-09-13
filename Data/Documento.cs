@@ -116,7 +116,7 @@ namespace Data
 
              public override string ToString()
              {
-                 return string.Format("idcp =  {0}  subtotal = {1} serienumero = {2} " , idcp, subtotal,serienumero);
+                 return string.Format("idcp =  {0}  subtotal = {1} serienumero = {2}  F.Emision = {3} " , idcp, subtotal,serienumero, fechaemision);
 
              }
      

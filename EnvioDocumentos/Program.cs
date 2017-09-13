@@ -7,15 +7,24 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Data;
 using CreaReporte;
+using System.Xml.Linq;
+using EnvioDocumentos;
 
 namespace EnvioDocumentos
 {
-    class Program
+    class Program 
     {
-         static string mee=null;
+       
 
         static void Main(string[] args)
         {
+
+            var envio = new EnvioSunat();
+            envio.Recorre();
+      
+
+            /*
+
              
             string dir = @"E:\ProgramaC#\senddocs\logs\";
             string logs = Path.Combine(dir, "logs_sendSunat.txt");
@@ -105,7 +114,7 @@ namespace EnvioDocumentos
                     //comandoUpt.ExecuteNonQuery();
                     var listadetalle = GetDetalle(doc.idcp, connection);
                     progPdf.Visualiza(doc, listadetalle);
-                    if (mee != "") { 
+                    if (mee != null) { 
                         sw.WriteLine("Se proceso el siguiente documento a Sunat:\t" + doc.serienumero + "\t" +uptError);
 
                 }
@@ -123,8 +132,16 @@ namespace EnvioDocumentos
       
 
             connection.Close();
+
+
+            */
+
+            Console.ReadLine();
             
         }
+
+
+       
 
         private static List<Detalle> GetDetalle(int idcpe, SqlConnection connection )
         {
@@ -160,6 +177,9 @@ namespace EnvioDocumentos
             return lista;
         }
 
+    
+
+
         private static SqlConnection GetConnection(string server, string db, string user, string password)
         {
             SqlConnection cn;
@@ -184,7 +204,7 @@ namespace EnvioDocumentos
 
 
 
-        private static string getvariablesconexion(ref string server, ref string db, ref string user, ref string password)
+        public static string getvariablesconexion(ref string PWDSunat, ref string userSunat,ref string server, ref string db, ref string user, ref string password)
         {
 
             var sr = new StreamReader("config.xml", Encoding.Default);
@@ -194,6 +214,9 @@ namespace EnvioDocumentos
             password = GetXml(ref interno, "PWD");
             server = GetXml(ref interno, "SERVER");
             db = GetXml(ref interno, "DB");
+            userSunat = GetXml(ref interno, "USUARIO");
+            PWDSunat = GetXml(ref interno, "CLAVESU");
+
             return "";
 
         }

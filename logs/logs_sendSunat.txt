@@ -1,0 +1,5 @@
+Se proceso el siguiente documento a Sunat:	B001-00001060	update cpe_doc_cab set estadoregistro='E' , mensajeerror=+Invalid column name 'B001'.+ where serienumero=B001-00001060
+Se proceso el siguiente documento a Sunat:	B001-00001061	update cpe_doc_cab set estadoregistro='E' , mensajeerror=+Invalid column name 'B001'.+ where serienumero=B001-00001061
+Se proceso el siguiente documento a Sunat:	B001-00001062	update cpe_doc_cab set estadoregistro='E' , mensajeerror=+Invalid column name 'B001'.+ where serienumero=B001-00001062
+Se proceso el siguiente documento a Sunat:	B001-00001063	update cpe_doc_cab set estadoregistro='E' , mensajeerror=+Invalid column name 'B001'.+ where serienumero=B001-00001063
+Se proceso el siguiente documento a Sunat:	B001-00001064	update cpe_doc_cab set estadoregistro='E' , mensajeerror=+Invalid column name 'B001'.+ where serienumero=B001-00001064
