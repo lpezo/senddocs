@@ -40,6 +40,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,17 +54,54 @@
     <Compile Include="EnvioSunat.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="rutaXml.cs" />
+    <Compile Include="Service References\SunatTest\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\Sunat\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Service References\SunatTest\billService.wsdl" />
+    <None Include="Service References\SunatTest\billService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SunatTest\billService1.wsdl" />
+    <None Include="Service References\SunatTest\EnvioDocumentos.SunatTest.statusResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Sunat\billService.wsdl" />
+    <None Include="Service References\Sunat\billService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Sunat\billService1.wsdl" />
+    <None Include="Service References\Sunat\billService2.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="soap.xml" />
+    <None Include="Service References\SunatTest\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\SunatTest\configuration.svcinfo" />
+    <None Include="Service References\SunatTest\configuration91.svcinfo" />
+    <None Include="Service References\Sunat\configuration91.svcinfo" />
+    <None Include="Service References\Sunat\configuration.svcinfo" />
+    <None Include="Service References\Sunat\EnvioDocumentos.Sunat.statusResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Sunat\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CreaReporte\CreaReporte.csproj">
@@ -73,6 +112,13 @@
       <Project>{7cde1c36-072d-42a3-a655-192ff0a84082}</Project>
       <Name>Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\SunatTest\" />
+    <WCFMetadataStorage Include="Service References\Sunat\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

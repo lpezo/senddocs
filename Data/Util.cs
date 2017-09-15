@@ -23,7 +23,7 @@ namespace Data
         }
 
 
-        
+
 
         public static int GetInt(SqlDataReader reader, string nombre)
         {
@@ -64,13 +64,13 @@ namespace Data
 
         public static string ObtenerDirectorio(string ruta, string fecha)
         {
-            var dest = Path.Combine( ruta,  fecha.Replace('-', '\\'));
+            var dest = Path.Combine(ruta, fecha.Replace('-', '\\'));
             if (Directory.Exists(dest))
                 return dest;
-            
-            var aa = fecha.Substring(0,4);
-            var mm = fecha.Substring(5,2);
-            var dd = fecha.Substring(8,2);
+
+            var aa = fecha.Substring(0, 4);
+            var mm = fecha.Substring(5, 2);
+            var dd = fecha.Substring(8, 2);
 
             ruta = Path.Combine(ruta, aa);
             if (!Directory.Exists(ruta))
@@ -117,5 +117,15 @@ namespace Data
         }
 
 
+
+        public static string LimpiarParaJson(string pValor)
+        {
+            while (pValor.Contains("'") )
+            {
+                pValor = pValor.Replace("'", " ");
+            }
+            return pValor;
+        }
+        
     }
 }

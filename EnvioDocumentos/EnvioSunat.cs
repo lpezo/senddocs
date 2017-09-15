@@ -83,6 +83,7 @@ namespace EnvioDocumentos
                         Console.WriteLine(cadadoc);
                         //var dirZip = Util.ObtenerDirectorio("FirmaXML", cadadoc.fechaemision);
                         var unico = string.Format("{0}-{1}-{2}.xml.zip", cadadoc.rucempresa, cadadoc.tipodocumento, cadadoc.serienumero);
+                        var unicoSinEx= string.Format("{0}-{1}-{2}", cadadoc.rucempresa, cadadoc.tipodocumento, cadadoc.serienumero);
                         var archzip = Util.ObtenerArchivo("FirmaXML", cadadoc.fechaemision, unico);
 
                         if (!
@@ -91,19 +92,31 @@ namespace EnvioDocumentos
                             var listadetalle = GetDetalle(cadadoc.idcp, connection);
                             progPdf.Visualiza(cadadoc, listadetalle);
                             Console.WriteLine("\t{0}", archzip);
-                            var filesoap = archzip+".soap";
-
+                            //var filesoap = archzip+".soap";
+                            /*
                             using (var sw = new StreamWriter(filesoap, false, Encoding.UTF8))
                             {
-                                var soap = GetSoap(user, pwd, archzip, "sendBill");
+                                var soap = EnviarSoap(filesoap);
                                 sw.WriteLine(soap);
                             }
-                            var envioSoap = EnviarSoap(filesoap, 2);
-                            Console.WriteLine(envioSoap);
-                            Console.ReadLine();
+                            */
+                            string dir = Path.Combine("FirmaXml",unicoSinEx+".txt");
+                            using (StreamWriter me = new StreamWriter(dir, false, Encoding.UTF8)) { 
+                            bool eserror = false;
+                                var envioSoap = EnviarSoap(archzip, out eserror);
+                                if (eserror==false)
+                                {
+                                    docEnviadoAsunatSinError(cadadoc.serienumero, cadadoc.tipodocumento);
+                                    me.WriteLine(envioSoap);
+                                }
+                                else
 
+                                InsertErrorMessage(envioSoap, cadadoc.serienumero, cadadoc.tipodocumento);
+                                me.WriteLine(envioSoap);
+                            
+                                
 
-
+                            }
                         }
                         else
                         Console.WriteLine("No existe el XML");
