@@ -9,6 +9,7 @@ using CreaReporte;
 using EnvioDocumentos;
 
 
+
 namespace EnvioDocumentos
 {
     
@@ -25,10 +26,9 @@ namespace EnvioDocumentos
             {
                 log.CrearLog("esend");
 
-                log.write("ENVIO A SUNAT...");
+                log.write("ENVIO  DE DOCUMENTOS A SUNAT...");
 
                 string query = "select  top 1 * from cpe_doc_cab where serienumero='F001-00001711' and tipodocumento='01'"; //estadoRegistro = 'L' or (estadoregistro = 'C' and (encustodia = 0 or encustodia is null)) order by fechaestado;";
-
 
                 GetConecciones();
 
@@ -42,12 +42,15 @@ namespace EnvioDocumentos
                 {
                     config = sr.ReadToEnd();
                 }
-                    var interno = GetXml(ref config, "ODBC");
-                    string user = GetXml(ref interno, "USUARIO");
-                    string pwd = GetXml(ref interno, "CLAVESU");
-                    Console.WriteLine("USUARIO: " + user);
-                    Console.WriteLine("CLAVE: " + pwd);
-              
+                var interno = GetXml(ref config, "SUNAT");
+                string user = GetXml(ref interno, "USUARIO");
+                string pwd = GetXml(ref interno, "CLAVESU");
+
+                interno = GetXml(ref config, "CLASE");
+                _portal = GetXml(ref interno, "PORTAL");
+                string sOficina = GetXml(ref interno, "OFICINA");
+                _oficina = Convert.ToInt32(sOficina);
+
 #if !DEBUG
             try
             {
@@ -64,6 +67,7 @@ namespace EnvioDocumentos
 #if !DEBUG
             }
             catch (Exception ex)
+
             {
                 Console.WriteLine(ex.Message);
             }
@@ -79,12 +83,15 @@ namespace EnvioDocumentos
                     try
                     {
 
-                     
-                        Console.WriteLine(cadadoc);
+                        DocPdf ThreeDirectory = new DocPdf();
+                        string path = ThreeDirectory.crearDirectorio("FirmaXml", cadadoc.fechaemision);
+                       // Console.WriteLine(cadadoc);
                         //var dirZip = Util.ObtenerDirectorio("FirmaXML", cadadoc.fechaemision);
                         var unico = string.Format("{0}-{1}-{2}.xml.zip", cadadoc.rucempresa, cadadoc.tipodocumento, cadadoc.serienumero);
                         var unicoSinEx= string.Format("{0}-{1}-{2}", cadadoc.rucempresa, cadadoc.tipodocumento, cadadoc.serienumero);
-                        var archzip = Util.ObtenerArchivo("FirmaXML", cadadoc.fechaemision, unico);
+                        var archzip = Util.ObtenerArchivo("FirmaXml", cadadoc.fechaemision, unico);
+                   
+
 
                         if (!
                             string.IsNullOrEmpty(archzip))
@@ -100,22 +107,44 @@ namespace EnvioDocumentos
                                 sw.WriteLine(soap);
                             }
                             */
-                            string dir = Path.Combine("FirmaXml",unicoSinEx+".txt");
+                            
+                            string dir = Path.Combine(path,unicoSinEx+".txt");
                             using (StreamWriter me = new StreamWriter(dir, false, Encoding.UTF8)) { 
-                            bool eserror = false;
+                                bool eserror = false;
                                 var envioSoap = EnviarSoap(archzip, out eserror);
-                                if (eserror==false)
+                                //Console.WriteLine(envioSoap);
+                               // Console.ReadLine();
+                                if (envioSoap == "")
                                 {
-                                    docEnviadoAsunatSinError(cadadoc.serienumero, cadadoc.tipodocumento);
+                                   
+                                    docEnviadoAsunatSinError(cadadoc, me);
+                                    log.write("El comprobante ha sido registrado exitosamente a Sunat");
+                                    me.WriteLine("El comprobante ha sido registrado exitosamente a Sunat");
+
+                                }
+                                
+                                else if (envioSoap== "El comprobante fue registrado previamente con otros datos")
+                                {
+                                    string message = "El comprobante fue registrado previamente con otros datos";
+                                    UpdateEstado(cadadoc
+                                        );
+                                    me.WriteLine(message);
+                                    log.write(envioSoap);
+                                }
+                                else if (envioSoap.Contains("OLE") || envioSoap.Contains("Internal Error") 
+                                    || envioSoap.Contains("Web Service") || envioSoap.Contains("no puede responder su solicitud")
+                                    || envioSoap.Contains("Error al cargar el controlador de impresora")
+                                    || envioSoap.Contains("appliacationresponse ni faultcode en CDR"))
+                                {
+                                    UpdateMensaje(envioSoap, cadadoc);
                                     me.WriteLine(envioSoap);
+                                    log.write(envioSoap);
                                 }
                                 else
+                                    InsertErrorMessage(envioSoap, cadadoc);
 
-                                InsertErrorMessage(envioSoap, cadadoc.serienumero, cadadoc.tipodocumento);
                                 me.WriteLine(envioSoap);
-                            
-                                
-
+                                log.write(envioSoap);
                             }
                         }
                         else

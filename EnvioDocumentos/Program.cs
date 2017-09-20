@@ -136,7 +136,7 @@ namespace EnvioDocumentos
 
             */
 
-            Console.ReadLine();
+           // Console.ReadLine();
             
         }
 
@@ -158,7 +158,7 @@ namespace EnvioDocumentos
                 {
                     var document = new Detalle(reader);
                     lista.Add(document);
-                    Console.WriteLine(document);
+                    //Console.WriteLine(document);
                 }
 
             }

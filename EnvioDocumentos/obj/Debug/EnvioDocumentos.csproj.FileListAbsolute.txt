@@ -48,3 +48,5 @@ E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\BarcodeLib.dll
 E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\zxing.dll
 E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\zxing.pdb
 E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\zxing.xml
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\Newtonsoft.Json.dll
+E:\ProgramaC#\senddocs\EnvioDocumentos\bin\Debug\Newtonsoft.Json.xml

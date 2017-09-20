@@ -34,7 +34,7 @@ namespace CreaReporte
 
         }
 
-        public static string crearDirectorio(string directorio, string fecha)
+        public  string crearDirectorio(string directorio, string fecha)
         {
 
             string ano = fecha.Substring(0,4);

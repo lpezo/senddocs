@@ -57,6 +57,7 @@ namespace Data
         public string codigochofer { get; set; }
         public string codigovendedor { get; set; }
         public string nombrevendedor { get; set; }
+        public DateTime fechaestado { get; set; }
         public Documento()
         {
 
@@ -64,6 +65,7 @@ namespace Data
 
         public Documento(SqlDataReader reader)
         {
+            this.fechaestado = Util.GetDateTime(reader,"fechaestado");
             this.sustentonotacredeb = Util.GetString(reader,"sustentonotacredeb");
             this.puntopartida = Util.GetString(reader, "puntoPartida");
             this.puntollegada = Util.GetString(reader, "puntoLlegada");

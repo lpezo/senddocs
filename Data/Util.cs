@@ -8,6 +8,21 @@ namespace Data
 {
     public class Util
     {
+        public static DateTime GetDateTime(SqlDataReader reader, string nombre)
+        {
+            int pos = reader.GetOrdinal(nombre);
+            if (pos >= 0)
+            {
+                if (reader.IsDBNull(pos))
+
+                    return DateTime.MinValue;
+                else
+                    return reader.GetDateTime(pos);
+            }
+            else
+                throw new Exception("No se encontro el campo " + nombre);
+        }
+
         public static string GetString(SqlDataReader reader, string nombre)
         {
             int pos = reader.GetOrdinal(nombre);

@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CLOficinaFecha.cs" />
     <Compile Include="Detalle.cs" />
     <Compile Include="Documento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,7 +8,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
-
+using CreaReporte;
+using Newtonsoft.Json;
 
 namespace EnvioDocumentos
 {
@@ -19,7 +20,8 @@ namespace EnvioDocumentos
         protected SqlConnection connection = null;
 
         protected Log log = null;
-
+        protected string _portal = null;
+        protected int _oficina ;
 
         public static string RutaXml()
         {
@@ -30,8 +32,8 @@ namespace EnvioDocumentos
             foreach (var doc in ficheros.GetFiles())
             {
 
-                Console.WriteLine(doc.Name);
-                Console.ReadLine();
+                //Console.WriteLine(doc.Name);
+                //Console.ReadLine();
 
             }
             return dir;
@@ -70,7 +72,7 @@ namespace EnvioDocumentos
             var interno = GetXml(ref config, "ODBC");
             user = GetXml(ref interno, "USUARIO");
             pwd = GetXml(ref interno, "CLAVESU");
-            Console.WriteLine();
+            //Console.WriteLine();
             return "";
 
         }
@@ -127,13 +129,14 @@ namespace EnvioDocumentos
                 {
                     var document = new Detalle(reader);
                     lista.Add(document);
-                    Console.WriteLine(document);
+                    //Console.WriteLine(document);
                 }
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                log.write(ex.Message);
             }
             finally
             {
@@ -147,125 +150,14 @@ namespace EnvioDocumentos
             return lista;
         }
 
-        //protected string EnviarSoap(string fsoap, int numserver)
-        //{
-        //    var webAddr = "https://www.sunat.gob.pe/ol-ti-itcpfegem/billService";
-        //    //var _url = "http://xxxxxxxxx/Service1.asmx";
-        //    //var _action = "http://xxxxxxxx/Service1.asmx?op=HelloWorld";
-
-        //    XmlDocument soapEnvelopeXml = CreateSoapEnvelope();
-        //    var webRequest = (HttpWebRequest)WebRequest.Create(webAddr);
-        //    InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
-
-        //    // begin async call to web request.
-        //    IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
-
-        //    // suspend this thread until call is complete. You might want to
-        //    // do something usefull here like update your UI.
-        //    asyncResult.AsyncWaitHandle.WaitOne();
-
-        //    // get the response from the completed web request.
-        //    string soapResult;
-        //    using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
-        //    {
-        //        using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
-        //        {
-        //            soapResult = rd.ReadToEnd();
-        //        }
-
-        //        Console.Write(soapResult);
-        //        Console.ReadLine();
-        //        return soapResult;
-        //    }
-
-        //}
-
-        //private static HttpWebRequest CreateWebRequest(string url, string action)
-        //{
-        //    HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-        //    webRequest.Headers.Add("SOAPAction", action);
-        //    webRequest.ContentType = "text/xml;charset=\"utf-8\"";
-        //    webRequest.Accept = "text/xml";
-        //    webRequest.Method = "POST";
-        //    return webRequest;
-        //}
-
-        //private static XmlDocument CreateSoapEnvelope(string usuario, string clave, string filezip, string tipo)
-        //{
-        //    filezip = "20114208346-01-F001-00001711.xml.zip.soap";
-        //    var bat64 = Util.GetBase64(filezip);
-        //    string nombre = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(filezip));
-        //    XmlDocument soapEnvelopeDocument = new XmlDocument();
-        //    string strsoap = @"<?xml version=""1.0"" encoding=""utf-8""?>
-        //    <soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:ser=""http://service.sunat.gob.pe/"" xmlns:wsse =""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd/"">
-        //      <soapenv:Header>
-        //        <wsse:Security>
-        //          <wsse:UsernameToken>
-        //           <wsse:Username>20600337832FACTURA2</wsse:Username>
-        //            <wsse:Password>krx32aFF</wsse:Password>
-        //          </wsse:UsernameToken></wsse:Security>
-        //      </soapenv:Header>
-        //      <soapenv:Body>
-        //        <ser:{2}>
-        //            <fileName>20114208346-01-F001-00001711.xml.zip.soap</fileName>
-        //            <contentFile>{4}</contentFile>
-        //          </ser:{2}>
-        //        </soapenv:Body></soapenv:Envelope>";
-
-        //    soapEnvelopeDocument.LoadXml(strsoap);
-        //    return string.Format(srtsoa,  usuario, clave, tipo, nombre + ".zip", bat64);
-        //}
-
-        //private static void InsertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml, HttpWebRequest webRequest)
-        //{
-        //    using (Stream stream = webRequest.GetRequestStream())
-        //    {
-        //        soapEnvelopeXml.Save(stream);
-        //    }
-        //}
-
-        //protected string EnviarSoap(string fsoap, int numserver)
-        // {
-        //     //Prueba 
-        //     //var webAddr = "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService";
-        //     //Produccion
-
-        //     var webAddr = "https://www.sunat.gob.pe/ol-ti-itcpfegem/billService";
-
-        //     string ssoap = "";
-        //     using (var sr = new StreamReader(fsoap, Encoding.Default))
-        //     {
-        //         ssoap = sr.ReadToEnd();
-        //     }
-
-        //     var httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
-        //    //
-        //     httpWebRequest.AllowWriteStreamBuffering = false;
-        //     httpWebRequest.ContentType = "text/xml;charset=UTF-8";
-        //     httpWebRequest.Accept = "text/xml";
-        //     httpWebRequest.Method = "POST";
-        //     httpWebRequest.Headers.Add("SOAPAction", "sendBill");
-        //     log.write("\t->" + webAddr);
-
-        //     using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-        //     {
-        //         streamWriter.Write(ssoap);
-        //         streamWriter.Flush();
-        //         streamWriter.Close();
-        //     }
-
-        //     var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-        //     using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-        //     {
-        //         var result = streamReader.ReadToEnd();
-        //         if (!string.IsNullOrEmpty(result))
-        //             log.write(result);
-        //         return result;
-        //     }
-        // }
-        protected string EnviarSoap(string fzip, out bool esError)
+       
+        protected string EnviarSoap(string fzip, out bool esError
+            )
         {
 
+
+            DocPdf threeDir = new DocPdf();
+            //threeDir.crearDirectorio(fzip, fechaemision );
             var billService = new billServiceClient("BillServicePort.11");
             esError = false;
             var resp = "";
@@ -274,39 +166,138 @@ namespace EnvioDocumentos
                 var bytes = billService.sendBill(Path.GetFileName(fzip).Replace(".xml", ""), File.ReadAllBytes(fzip), "");
                 //sCdrZip = System.Text.Encoding.Default.GetString(bytes);
                 var rfzip = Path.Combine(Path.GetDirectoryName(fzip), "R-" + Path.GetFileName(fzip));
-                File.WriteAllBytes(rfzip, bytes);
-
-                
+                File.WriteAllBytes(rfzip, bytes);   
             }
             catch (Exception ex)
             {
                 resp = "Error: " + ex.Message;
                 esError = true;
-                
             }
-
-
             return resp;
         }
 
-        protected void docEnviadoAsunatSinError(string serienumero, string td)
+        protected void docEnviadoAsunatSinError(Documento doc, StreamWriter me )
         {
-            {
-                string sql = "UPDATE cpe_doc_cab set mensajeerror=' ', ensunat=1, estadoregistro='L' where serienumero='" + serienumero + "' and tipodocumento='" + td + "'";
-                string query = string.Format(sql, serienumero, td);
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-            }
+            log.write("Envindo a Sunat el documento "+doc.tipodocumento+"-"+doc.serienumero+" ....");
+            string sql = "UPDATE cpe_doc_cab set mensajeerror=' ', ensunat=1, estadoregistro='S' where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string sqlCLI = "UPDATE doc_cab_cli set mensajeerror=' ',  estadoregistro='S' where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string query = string.Format(sql, doc.serienumero, doc.tipodocumento);
+            string queryCLI = string.Format(sqlCLI, doc.serienumero, doc.tipodocumento);
+            SqlCommand command = new SqlCommand(query, connection);
+            SqlCommand commandCLI = new SqlCommand(queryCLI, connection);
+            log.write("Enviando a CPE");
+            command.ExecuteNonQuery();
+            log.write(query);
+            log.write("Enviando a CLI");
+            commandCLI.ExecuteNonQuery();
+            log.write(queryCLI);
+            log.write("Enviando a Portal...");
+            EnviarDoc(doc);
+            me.WriteLine("Documento enviado sin errores");
         }
-        protected void InsertErrorMessage(string message, string serienumero, string td)
+
+
+
+        protected void UpdateEstado( Documento doc)
         {
+            log.write("El comprobando ya fue registrado con otros datos");
+            string sql = "UPDATE cpe_doc_cab set mensajeerror='El comprobante fue registrado previamente con otros datos', ensunat='1', estadoregistro='S' where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string sqlCLI = "UPDATE doc_cab_cli set mensajeerror='El comprobante fue registrado previamente con otros datos',  estadoregistro='S' where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string query = string.Format(sql, doc.serienumero, doc.tipodocumento);
+            string queryCLI = string.Format(sqlCLI, doc.serienumero, doc.tipodocumento);
+            SqlCommand command = new SqlCommand(query, connection);
+            SqlCommand commandCLI = new SqlCommand(queryCLI, connection);
+            log.write("Modificando estado de registro en  CPE");
+            command.ExecuteNonQuery();
+            log.write(query);
+            log.write("Modificando estado de registro en  CLI");
+            commandCLI.ExecuteNonQuery();
+            log.write(queryCLI);
+            log.write("Modificando estado de registro en  Portal...");
+            EnviarDoc(doc);
+
+        }
+
+        protected void UpdateMensaje(string message, Documento doc)
+        {
+            log.write("Error al enviar a Sunat:");
             string messageE = LimpiarParaJson(message);
-            string sql = "UPDATE cpe_doc_cab set mensajeerror='" + messageE + "' where serienumero='" + serienumero + "' and tipodocumento='" +td+"'";
-            Console.WriteLine(sql);
-            string query = string.Format( sql, message, serienumero, td);
+            log.write(messageE);
+            string sql = "UPDATE cpe_doc_cab set mensajeerror='"+ messageE + "' where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string sqlCLI = "UPDATE doc_cab_cli set mensajeerror='" + messageE + "' where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string query = string.Format(sql, message, doc.serienumero, doc.tipodocumento);
+            string queryCLI = string.Format(sqlCLI, doc.serienumero, doc.tipodocumento, message);
+            SqlCommand command = new SqlCommand(query, connection);
+            SqlCommand commandCLI = new SqlCommand(queryCLI, connection);
+            log.write("Modificando Mensaje de Error a CPE");
+            command.ExecuteNonQuery();
+            log.write(query);
+            log.write("Modificando Mensaje de Error CLI");
+            commandCLI.ExecuteNonQuery();
+            log.write(queryCLI);
+            log.write("Modificando Mensaje de Error a Portal...");
+            EnviarDoc(doc);
+        }
+        protected void InsertErrorMessage(string message, Documento doc)
+        {
+            log.write("Error al enviar a Sunat:");
+            string messageE = LimpiarParaJson(message);
+            log.write(messageE);
+            string sql = "UPDATE cpe_doc_cab set mensajeerror='" + messageE + "' , estadoregistro='E', ensunat='0'  where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string sqlCLI = "UPDATE doc_cab_cli set mensajeerror='" + messageE + "' , estadoregistro='E'  where serienumero='" + doc.serienumero + "' and tipodocumento='" + doc.tipodocumento + "'";
+            string query = string.Format( sql, message, doc.serienumero, doc.tipodocumento);
+            string queryCLI = string.Format(sqlCLI, message, doc.serienumero, doc.tipodocumento);
             SqlCommand command = new SqlCommand(query,connection);
-             command.ExecuteNonQuery();
-     
+            SqlCommand commandCLI = new SqlCommand(queryCLI, connection);
+            log.write("Enviando Error a CPE ");
+            command.ExecuteNonQuery();
+            log.write(query);
+            log.write("Enviando Error a CLI");
+            commandCLI.ExecuteNonQuery();
+            log.write(queryCLI);
+            log.write("Enviando Error a Portal...");
+            EnviarDoc(doc);
+        }
+
+        protected string EnviarDoc( Documento doc)
+        {
+            
+
+                log.write("Insertando documento en el portal....");
+                var webAddr = "http://" + _portal + "/ws/" + "oficina_fecha.php";
+                log.write(webAddr);
+                var httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "PUT";
+                log.write("\t->" + webAddr);
+
+                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    var obj = ClOficinaFecha.FromDoc(doc, _oficina);
+                    var serializerSettings = new JsonSerializerSettings();
+                    string json = JsonConvert.SerializeObject(obj, serializerSettings);
+                    log.write(json);
+                    streamWriter.Write(json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+
+
+                }
+
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                
+            {
+                    var result = streamReader.ReadToEnd();
+                    if (!string.IsNullOrEmpty(result))
+                        log.write(result);
+                    return result;
+                
+            }
+
+            
+
         }
 
         private string LimpiarParaJson(string pValor)
@@ -318,39 +309,6 @@ namespace EnvioDocumentos
                 sb.Replace(car, ' ');
             return sb.ToString();
         }
-
-
-        //protected string GetSoap(string usuario, string clave, string filezip, string tipo)
-        //{
-
-        //    var bat64 = Util.GetBase64(filezip);
-        //    string nombre = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(filezip));
-
-
-        //    var strsoap = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-        //    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.sunat.gob.pe/\" xmlns:wsse =\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd/\">" +
-        //    "  <soapenv:Header>" +
-        //    "    <wsse:Security>" +
-        //    "      <wsse:UsernameToken>" +
-        //    "       <wsse:Username>{0}</wsse:Username>" +
-        //    "        <wsse:Password>{1}</wsse:Password>" +
-        //    "      </wsse:UsernameToken></wsse:Security>" +
-        //    "  </soapenv:Header>" +
-        //    "  <soapenv:Body>" +
-        //    "    <ser:{2}>" +
-        //    "        <fileName>{3}</fileName>" +
-        //    "        <contentFile>{4}</contentFile>" +
-        //    "      </ser:{2}>" +
-        //    "    </soapenv:Body></soapenv:Envelope>";
-
-
-
-
-
-        //    return string.Format(strsoap, usuario, clave, tipo, nombre+".zip" , bat64 );
-
-        //}
-
 
     }
 
